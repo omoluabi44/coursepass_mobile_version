@@ -16,6 +16,11 @@ module.exports = {
       fontSize: {
         lg: "20px",
         sm: "16px"
+    },
+    fontFamily: {
+      sans: ['Inter', 'sans-serif'],
+      serif: ['Georgia', 'serif'],
+      mono: ['Courier New', 'monospace'],
     }
     },
   },
