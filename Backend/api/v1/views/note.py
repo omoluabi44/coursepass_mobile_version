@@ -1,0 +1,89 @@
+from api.v1.views import app_views
+from flask import jsonify, make_response, abort, request
+from models import storage
+from models.outline import Outline
+from models.note import Note
+
+import os
+
+@app_views.route('/outline/<outline_id>/notes', methods=['GET'], strict_slashes=False)
+def get_outline_notes(outline_id):
+    """
+    Retrieves the list of all outline for a specific Course.
+    """
+    outline = storage.get_id(Outline, outline_id)
+    if not outline:
+        abort(404)
+    outline_dict = [note.to_dict() for note in outline.note if note.outlineID == outline_id]
+    return jsonify(outline_dict)
+
+
+# Get a specific content by ID
+@app_views.route('/note/<note_id>', methods=['GET'], strict_slashes=False)
+def get_note(note_id):
+    """
+    
+    Retrieves a specific notes by its ID.
+    """
+    note = storage.get_id(Note, note_id)
+    if not note:
+        abort(404)
+    return jsonify(note.to_dict())
+
+
+@app_views.route('/note/<outline_id>/', methods=['POST'], strict_slashes=False)
+def post_note(outline_id):
+    """
+    Creates new note for a specific outline.
+    """
+
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    
+    data = request.get_json()
+    if 'content' not in data:
+        abort(400, description="Missing topic")
+    if 'orderID' not in data:
+        abort(400, description="Missing orderID")
+    data['outlineID'] = outline_id  
+    
+    note = Note(**data)  
+    note.save()
+  
+    return make_response(jsonify(note.to_dict()), 201)
+
+
+
+# Update content
+@app_views.route('/note/<note_id>', methods=['PUT'], strict_slashes=False)
+def put_note(note_id):
+    """
+    Updates existing Content.
+    """
+    note = storage.get_id(Note, note_id)
+    if not note:
+        abort(404)
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    
+    data = request.get_json()
+    ignore = ['id', 'course_id', 'created_at', 'updated_at']
+    for key, value in data.items():
+        if key not in ignore:
+            setattr(note, key, value)
+    note.save()
+    return make_response(jsonify(note.to_dict()), 200)
+
+
+# Delete content
+@app_views.route('/note/<note_id>', methods=['DELETE'], strict_slashes=False)
+def delete_note(note_id):
+    """
+    Deletes Content by its ID.
+    """
+    note = storage.get_id(Note, note_id)
+    if not note:
+        abort(404)
+    storage.delete(note)
+    storage.save()
+    return make_response(jsonify({}), 200)
