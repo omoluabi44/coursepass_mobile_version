@@ -20,6 +20,9 @@ from datetime import datetime, timedelta
 @swag_from(join(dirname(__file__), 'documentation/user/all_users.yml'))
 @jwt_required()
 def get_users():
+    """
+    retrieve  all user object
+    """
    
     all_users = storage.all(User).values()
     list_users = []
@@ -28,10 +31,11 @@ def get_users():
     return jsonify(list_users)
     
 @app_views.route('/user/<user_id>', methods=["GET"], strict_slashes=False)
-# @jwt_required()
+@swag_from(join(dirname(__file__), 'documentation/user/get_user.yml'))
+@jwt_required()
 def get_user(user_id):
     """
-    retrieve  user object
+    retrieve  specific  user object using id
     """
     user= storage.get_id(User, user_id)
     if not user:
@@ -44,7 +48,9 @@ def get_user(user_id):
     
     return jsonify(user_dict)
     
-@app_views.route('/register', methods=["POST"], strict_slashes=False)
+@app_views.route('/auth/register', methods=["POST"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/register_user.yml'))
+
 def post_user():
     """
         CREATE  a new user
@@ -52,13 +58,13 @@ def post_user():
     if not request.get_json():
         abort(400, description="Not a JSON")
     data = request.get_json()
-    requiredField = ["username", "password", "email"]
+    requiredField = ["username", "password", "email","Lname", "Fname"]
     for i in requiredField:
         if i not in data:
             abort(400, description=f"Missing {i}")
    
     verification_code = str(random.randint(100000, 999999))
-    expires_at = datetime.utcnow() + timedelta(seconds=15)
+    expires_at = datetime.utcnow() + timedelta(hours=2)
 
     print(verification_code)
     
@@ -84,8 +90,7 @@ def post_user():
 def generate_verification_code(user):
     """generate new new code and reset expiration"""
     user.verification_code = str(random.randint(100000, 999999))
-    user.code_expires_at = datetime.utcnow() + timedelta(seconds=15)
-    user.verification_attempts += 1
+    user.code_expires_at = datetime.utcnow() + timedelta(hours=2)
     storage.save()
     return user.verification_code
 def send_verification_email(recipient,code):
@@ -95,7 +100,8 @@ def send_verification_email(recipient,code):
     msg = Message(subject=subject, body=body, recipients=[recipient])
     mail.send(msg)
 
-@app_views.route('/resend_code', methods=["POST"], strict_slashes=False)
+@app_views.route('/auth/resend_code', methods=["POST"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/resend.yml'))
 def resend_code():
     """ resend verification code"""
     if not request.get_json():
@@ -103,6 +109,9 @@ def resend_code():
     data = request.get_json()
     if not data or 'email' not in data:
         abort(400, description="Email required")
+    
+    if not data or 'username' not in data:
+        abort(400, description="username required")
     
     username = data["username"]
     user = storage.get_username(User, username)
@@ -120,7 +129,8 @@ def resend_code():
 
 
 
-@app_views.route('/verify', methods=["POST"], strict_slashes=False)
+@app_views.route('/auth/verify', methods=["POST"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/verify.yml'))
 def verify():
     """ verify user account"""
     if not request.get_json():
@@ -150,7 +160,8 @@ def verify():
     return jsonify({"message":"verify!"})
 
 
-@app_views.route('/login', methods=["POST"], strict_slashes=False)
+@app_views.route('/auth/login', methods=["POST"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/login.yml'))
 def login_user():
     """
         login  a  user
@@ -158,7 +169,7 @@ def login_user():
     if not request.get_json():
         abort(400, description="Not a JSON")
     if 'username' not in request.get_json():
-         abort(400, description="Missing email")
+         abort(400, description="Missing username")
     if 'password' not in request.get_json():
          abort(400, description="Missing password")
 
@@ -178,10 +189,17 @@ def login_user():
     refresh_token = create_refresh_token(identity=user.id)
     return jsonify( 
         {   
-            "Message":"Logged In",
             "tokens":{
                 "access": access_token,
                 "refresh":refresh_token
+            },
+            "user":{
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "Fname": user.Fname,
+                "Lname": user.Lname,
+         
             }
         }
         
@@ -209,6 +227,7 @@ def send_email():
 
 
 @app_views.route('/user/<user_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/put_user.yml'), methods=['PUT'])
 def update_user(user_id):
     """
     Updates an existing user.
@@ -242,3 +261,15 @@ def update_user(user_id):
         user_dict['university'] = None
         
     return make_response(jsonify(user_dict), 200)
+@app_views.route('/user/<user_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/delete_user.yml'))
+def del_user(user_id):
+    """
+    Deletes user by its ID.
+    """
+    user = storage.get_id(User, user_id)
+    if not user:
+        abort(404)
+    storage.delete(user)
+    storage.save()
+    return make_response(jsonify({}), 200)

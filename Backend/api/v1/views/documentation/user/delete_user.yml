@@ -1,15 +1,24 @@
-    Deletes a user 
-    ---
-    tags:
-      - Users
-    parameters:
-      - name: user_id
-        in: path
-        type: string
-        required: false
-        description: The unique id of the user
-    responses:
-      404:
-        description: user not found!
-      200:
-        description: request executed successfully
+Delete a user
+---
+tags:
+  - Users
+security:
+  - bearerAuth: []
+summary: Delete an existing user
+description: Deletes a user from the system by their UUID. This action is irreversible and requires proper authentication.
+
+parameters:
+  - in: path
+    name: user_id
+    required: true
+    type: string
+    description: UUID of the user to delete
+
+responses:
+  200:
+    description: User deleted successfully
+    schema:
+      type: object
+      description: Empty response indicating successful deletion
+  404:
+    description: User not found

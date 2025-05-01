@@ -4,6 +4,9 @@ tags:
   - Users
 security:
     - bearerAuth: []
+summary: Retrieve a list of all users
+description: Returns a list of all registered users in the system. This endpoint requires JWT authentication and is restricted to authorized users.
+
 
 responses:
   200:

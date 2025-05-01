@@ -1,13 +1,16 @@
 import { View, Text, Image } from 'react-native'
-import React from 'react'
+import React, {useState,useEffect}from 'react'
 import {DrawerToggleButton} from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Header() {
+
+    
   return (
     <View >
         <View>
             <View className='ml-3 mt-2'>
-                <Text> hello Emmanuel 👋 </Text>
+                <Text> hello  👋 </Text>
             </View>
         </View>
         

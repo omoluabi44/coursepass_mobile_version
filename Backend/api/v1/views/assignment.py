@@ -4,14 +4,18 @@ from models import storage
 from models.assignment import Assignment
 from models.course import Courses
 from datetime import datetime, date
-
 import os
+from os.path import join, dirname
+from flask_jwt_extended import  jwt_required
+from flasgger.utils import swag_from
 
 session = storage._DBStorage__session
 
 
 
 @app_views.route('/assignment/<course_id>', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/assignment/all_assignment.yml'))
+@jwt_required()
 def get_assignment(course_id):
     """
     get assignemnt by course id
@@ -28,7 +32,8 @@ def get_assignment(course_id):
 
 
 @app_views.route('/assignment', methods=['POST'], strict_slashes=False)
-# @swag_from('documentation/user/post_user.yml', methods=['POST'])
+@swag_from(join(dirname(__file__), 'documentation/assignment/post_assignment.yml'))
+@jwt_required()
 def post_assignment():
     """
     Creates a assignment
@@ -58,6 +63,7 @@ def post_assignment():
     return make_response(jsonify(instance.to_dict()), 201)
     # return("success")
 @app_views.route('/assignment/<assignment_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/assignment/update_assignment.yml'))
 def put_assignment(assignment_id):
     """
     Updates an existing assignment.
@@ -79,6 +85,7 @@ def put_assignment(assignment_id):
     return make_response(jsonify(assignemnt.to_dict()), 200)
 
 @app_views.route('/assignment/<assignment_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/assignment/del_assignment.yml'))
 def del_assignment(assignment_id):
     """
     Deletes assignment by its ID.

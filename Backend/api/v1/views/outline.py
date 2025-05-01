@@ -3,10 +3,14 @@ from flask import jsonify, make_response, abort, request
 from models import storage
 from models.outline import Outline
 from models.course import Courses
-
 import os
+from os.path import join, dirname
+from flask_jwt_extended import  jwt_required
+from flasgger.utils import swag_from
 
 @app_views.route('/courses/<course_id>/outline', methods=['GET'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/outline/all_outline.yml'))
+@jwt_required()
 def get_course_content(course_id):
     """
     Retrieves the list of all outline for a specific Course.
@@ -25,6 +29,8 @@ def get_course_content(course_id):
 
 # Get a specific content by ID
 @app_views.route('/outline/<outline_id>', methods=['GET'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/outline/get_outline.yml'))
+@jwt_required()
 def get_content(outline_id):
     """
     
@@ -37,6 +43,8 @@ def get_content(outline_id):
 
 
 @app_views.route('/outline', methods=['POST'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/outline/post_outline.yml'))
+@jwt_required()
 def post_content():
     """
     Creates new outline for a specific Course.
@@ -64,6 +72,8 @@ def post_content():
 
 # Update content
 @app_views.route('/outline/<outline_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/outline/update_outline.yml'))
+@jwt_required()
 def put_content(outline_id):
     """
     Updates existing Content.
@@ -85,6 +95,8 @@ def put_content(outline_id):
 
 # Delete content
 @app_views.route('/outline/<outline_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/outline/del_outline.yml'))
+@jwt_required()
 def delete_content(outline_id):
     """
     Deletes Content by its ID.

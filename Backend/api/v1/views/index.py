@@ -2,7 +2,6 @@
 """ Index """
 from models.course import Courses
 from models import storage
-from models.all_course import Courses_list
 from models.outline import Outline
 from models.quize import Quize
 from models.university import University
@@ -23,8 +22,8 @@ def status():
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def number_objects():
     """ Retrieves the number of each objects by type """
-    classes = [Courses,Courses_list,Outline,Questions, User, University, Note, Quize, Enrollment, Assignment, Allocation ,Flashcard]
-    names = ["courses", "courses_list", "outline", "questions", "user", "university", "note", "quize", "enrollment", "assignment", "allocation", "flashcard"]
+    classes = [Courses,Outline,Questions, User, University, Note, Quize, Enrollment, Assignment, Allocation ,Flashcard]
+    names = ["courses",  "outline", "questions", "user", "university", "note", "quize", "enrollment", "assignment", "allocation", "flashcard"]
 
     num_objs = {}
     for i in range(len(classes)):

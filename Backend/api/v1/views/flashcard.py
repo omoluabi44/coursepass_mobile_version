@@ -6,15 +6,20 @@ from models.flashcard import Flashcard
 from models.course import Courses
 from models.enrollment import Enrollment
 import os
+from os.path import join, dirname
+from flask_jwt_extended import  jwt_required
+from flasgger.utils import swag_from
 
 session = storage._DBStorage__session
 
 
 
 @app_views.route('/flashcards/<user_id>/<course_id>', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/flashcard/all_flashcard.yml'))
+@jwt_required()
 def get_flashcard(user_id,course_id):
     """
-    get score by user id and course id
+    get flashcard by user id and course id
     """
     enroll_user = storage.get_enroll_id(Enrollment,user_id,course_id )
     if not enroll_user:
@@ -28,37 +33,13 @@ def get_flashcard(user_id,course_id):
   
 
     return(make_response(jsonify(flashcard),200))
-@app_views.route('/score/<user_id>/', methods=["GET"], strict_slashes=False)
-def get_all_flashcard(user_id,):
-    """
-    get  user all scores
-    """
-   
-    course = session.query(Enrollment).filter_by(userID=user_id).all()
-    if not course:
-        abort(404)
-    enroll_id_course = []
 
-    for i in course:
-        enroll_id_course.append({"id": i.id, "courseID": i.courseID})
-    all_score = [] 
-    for j in enroll_id_course:
-        enroll_user_id = j["id"]
-        course_id = j["courseID"]
-        course = session.query(Score).filter_by(enrollmentID=enroll_user_id).all()
-        scores = []
-        for i in course:
-            scores.append(i.score)
-        score_course =[course_id, scores]
-        all_score.append(score_course)
- 
-
-    return(make_response(jsonify(all_score),200))
 
 
 
 @app_views.route('/flashcard', methods=['POST'], strict_slashes=False)
-# @swag_from('documentation/user/post_user.yml', methods=['POST'])
+@swag_from(join(dirname(__file__), 'documentation/flashcard/post_flashcard.yml'))
+@jwt_required()
 def post_flashcard():
     """
     Creates a flashcard
@@ -86,6 +67,8 @@ def post_flashcard():
     instance.save()
     return make_response(jsonify(instance.to_dict()), 201)
 @app_views.route('/flashcard/<flashcard_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/flashcard/update_flashcard.yml'))
+@jwt_required()
 def put_flashcard(flashcard_id):
     """
     Updates an existing flashcard.
@@ -108,6 +91,8 @@ def put_flashcard(flashcard_id):
   
 
 @app_views.route('/flashcard/<flashcard_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/flashcard/del_flashcard.yml'))
+@jwt_required()
 def del_flashcard(flashcard_id):
     """
     Deletes flashcard by its ID.

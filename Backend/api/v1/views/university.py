@@ -10,9 +10,13 @@ from flasgger.utils import swag_from
 from flask_mail import Mail, Message
 from os import environ
 from datetime import datetime, timedelta
+from flask_jwt_extended import jwt_required
+from os.path import join, dirname
 
 
 @app_views.route('/university/<user_id>', methods=["POST"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/university/post_uni.yml'))
+@jwt_required()
 def post_university(user_id):
     """
         CREATE  a new university

@@ -6,12 +6,17 @@ from models.score import Score
 from models.course import Courses
 from models.enrollment import Enrollment
 import os
+from flask_jwt_extended import jwt_required
+from os.path import join, dirname
+from flasgger.utils import swag_from
 
 session = storage._DBStorage__session
 
 
 
 @app_views.route('/score/<user_id>/<course_id>', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/score/get_score.yml'))
+@jwt_required()
 def get_score(user_id,course_id):
     """
     get score by user id and course id
@@ -26,12 +31,13 @@ def get_score(user_id,course_id):
         scores.append(i.score)
     
     score_course =[course_id, scores]
-    # return make_response(jsonify(quizes_dict),200)
-    for i in score_course:
-        print(i)
+    
+    
 
     return(make_response(jsonify(score_course),200))
+
 @app_views.route('/score/<user_id>/', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/score/all_score.yml'))
 def get_all_score(user_id,):
     """
     get  user all scores
@@ -61,7 +67,7 @@ def get_all_score(user_id,):
 
 
 @app_views.route('/score', methods=['POST'], strict_slashes=False)
-# @swag_from('documentation/user/post_user.yml', methods=['POST'])
+@swag_from(join(dirname(__file__), 'documentation/score/post_score.yml'))
 def post_score():
     """
     Creates a score
@@ -91,6 +97,7 @@ def post_score():
     # return("success")
 
 @app_views.route('/score/<score_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/score/del_score.yml'))
 def del_score(score_id):
     """
     Deletes quize by its ID.

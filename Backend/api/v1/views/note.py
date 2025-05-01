@@ -3,13 +3,19 @@ from flask import jsonify, make_response, abort, request
 from models import storage
 from models.outline import Outline
 from models.note import Note
-
 import os
+from os.path import join, dirname
+from flask_jwt_extended import  jwt_required
+from flasgger.utils import swag_from
+
+
 
 @app_views.route('/outline/<outline_id>/notes', methods=['GET'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/note/all_note.yml'))
+@jwt_required()
 def get_outline_notes(outline_id):
     """
-    Retrieves the list of all outline for a specific Course.
+    Retrieves the list of all note for a specific Course.
     """
     outline = storage.get_id(Outline, outline_id)
     if not outline:
@@ -18,8 +24,10 @@ def get_outline_notes(outline_id):
     return jsonify(outline_dict)
 
 
-# Get a specific content by ID
+
 @app_views.route('/note/<note_id>', methods=['GET'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/note/get_note.yml'))
+@jwt_required()
 def get_note(note_id):
     """
     
@@ -32,6 +40,8 @@ def get_note(note_id):
 
 
 @app_views.route('/note/<outline_id>/', methods=['POST'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/note/post_note.yml'))
+@jwt_required()
 def post_note(outline_id):
     """
     Creates new note for a specific outline.
@@ -56,6 +66,8 @@ def post_note(outline_id):
 
 # Update content
 @app_views.route('/note/<note_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/note/update_note.yml'))
+@jwt_required()
 def put_note(note_id):
     """
     Updates existing Content.
@@ -77,6 +89,8 @@ def put_note(note_id):
 
 # Delete content
 @app_views.route('/note/<note_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/note/del_note.yml'))
+@jwt_required()
 def delete_note(note_id):
     """
     Deletes Content by its ID.

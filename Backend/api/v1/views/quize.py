@@ -3,11 +3,16 @@ from flask import jsonify, make_response, abort, request
 from models import storage
 from models.quize import Quize
 from models.course import Courses
+from os.path import join, dirname
+from flask_jwt_extended import  jwt_required
+from flasgger.utils import swag_from
 
 import os
 
 
 @app_views.route('/courses/<course_id>/quize', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/quize/get_quiz.yml'))
+@jwt_required()
 def get_question(course_id):
     course = storage.get(Courses,course_id )
     if not course:
@@ -18,7 +23,8 @@ def get_question(course_id):
     return make_response(jsonify(quizes_dict),200)
 
 @app_views.route('/quize', methods=['POST'], strict_slashes=False)
-# @swag_from('documentation/user/post_user.yml', methods=['POST'])
+@swag_from(join(dirname(__file__), 'documentation/quize/post_quiz.yml'))
+@jwt_required()
 def post_quize():
     """
     Creates a quize
@@ -40,6 +46,8 @@ def post_quize():
     return make_response(jsonify(instance.to_dict()), 201)
 
 @app_views.route('/quize/<quize_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/quize/update_quiz.yml'))
+@jwt_required()
 def put_quize(quize_id):
     """
     Updates an existing quize.
@@ -62,6 +70,8 @@ def put_quize(quize_id):
     return make_response(jsonify(quize.to_dict()), 200)
 
 @app_views.route('/quize/<quize_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/quize/del_quiz.yml'))
+@jwt_required()
 def del_quize(quize_id):
     """
     Deletes quize by its ID.

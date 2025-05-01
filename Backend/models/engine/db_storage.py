@@ -8,7 +8,6 @@ import models
 from models.base_model import BaseModel, Base
 from models.user import User
 from models.university import University
-from models.all_course import Courses_list
 from models.outline import Outline
 from models.course import Courses
 from models.note import Note
@@ -26,7 +25,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 classes = {
             "Note":Note, "User": User,"University":University,"Courses": Courses,
-             "Courses_list": Courses_list, "Outline": Outline, "Quize":Quize, "Enrollment"
+             "Outline": Outline, "Quize":Quize, "Enrollment"
             :Enrollment, "Score":Score, "Assignment":Assignment, "Allocation":Allocation,
             "Flashcard":Flashcard
     }

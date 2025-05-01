@@ -4,8 +4,11 @@ from models import storage
 from models.user import User
 from models.course import Courses
 from models.enrollment import Enrollment
-
 import os
+from os.path import join, dirname
+from flask_jwt_extended import  jwt_required
+from flasgger.utils import swag_from
+
 
 
 # @app_views.route('/enrollments/<enroll_id>/', methods=["GET"], strict_slashes=False)
@@ -19,6 +22,8 @@ import os
 #     return make_response(jsonify(quizes_dict),200)
 
 @app_views.route('/enrollment/user/<user_id>/', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/enrollment/all_enrollment.yml'))
+@jwt_required()
 def get_enrollment_user(user_id):
     user = storage.get_id(User,user_id )
     if not user:
@@ -38,7 +43,8 @@ def get_enrollment_course(course_id):
     
  
 @app_views.route('/enrollment', methods=['POST'], strict_slashes=False)
-# @swag_from('documentation/user/post_user.yml', methods=['POST'])
+@swag_from(join(dirname(__file__), 'documentation/enrollment/post_enrollment.yml'))
+@jwt_required()
 def post_enrollment():
     """
     Creates a quize
@@ -71,6 +77,8 @@ def post_enrollment():
 
 
 @app_views.route('/enrollment/<enrollment_id>', methods=['PUT'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/enrollment/update_enrollment.yml'))
+@jwt_required()
 def put_enrollment(enrollment_id):
     """
     Updates an existing enrollment .
@@ -101,6 +109,8 @@ def put_enrollment(enrollment_id):
     return make_response(jsonify(enrollment.to_dict()), 200)
 
 @app_views.route('/enrollment/<enrollment_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/enrollment/del_enrollment.yml'))
+@jwt_required()
 def del_enrollment(enrollment_id):
     """
     Deletes enrollment by its ID.

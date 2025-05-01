@@ -2,6 +2,9 @@ retrieves a specific user.
 ---
 tags:
   - Users
+summary: Retrieve a specific user
+# description: Returns the details of a user identified by their unique ID. This endpoint requires JWT authentication with a valid Bearer token in the Authorization header (e.g., `Authorization: Bearer <token>`). Restricted to authorized users. If the user is associated with a university, the university details are included; otherwise, the university field is null.
+description: Returns the details of a user identified by their unique ID. This endpoint requires JWT authentication with a valid Bearer token in the Authorization header 
 parameters:
   - name: user_id
     in: path
@@ -38,3 +41,9 @@ responses:
         last_name:
            type: string
            description: user's last name
+  401:
+    description: Unauthorized - Missing or invalid JWT token
+  403:
+    description: Forbidden - Insufficient permissions to access this resource
+  404:
+    description: Not Found - User with the specified ID does not exist

@@ -10,7 +10,6 @@ from models.base_model import BaseModel
 from models.user import User
 from models.university import University
 from models.course import Courses
-from models.all_course import Courses_list
 from models.outline import Outline
 from models.note import Note
 from models.quize import Quize
@@ -23,7 +22,7 @@ from hashlib import md5
 
 classes = {
             "Note":Note,"User":User, "BaseModel": BaseModel,"University":University, 
-            "Courses": Courses, "Courses_list": Courses_list, "Outline": Outline, 
+            "Courses": Courses,  "Outline": Outline, 
             "Quize":Quize,"Enrollment":Enrollment, "Score":Score, "Assignment":Assignment, "Allocation":Allocation,
             "Flashcard":Flashcard
           }
