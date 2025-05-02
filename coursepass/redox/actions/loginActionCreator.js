@@ -1,4 +1,4 @@
-import {LOGIN_REQUEST, LOGIN_SUCCESS,LOGIN_FAILURE,LOGOUT } from "./loginActionTypes";
+import {LOGIN_REQUEST, LOGIN_SUCCESS,LOGIN_FAILURE,LOGOUT, UPDATE_ACCESS_TOKEN } from "./loginActionTypes";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
@@ -13,14 +13,17 @@ export function loginRequest() {
 export function loginSuccess( token, user) {
   AsyncStorage.setItem('token', JSON.stringify(token))
   AsyncStorage.setItem('user', JSON.stringify(user))
-  
-
-  
 
 return {
     type: LOGIN_SUCCESS,
     token,
     user
+  };
+}
+export function updateAccessToken(accessToken) {
+  return {
+    type: UPDATE_ACCESS_TOKEN,
+    accessToken,
   };
 }
 export function loginFailure(error) {
@@ -86,6 +89,8 @@ export const initializeAuth = () => async (dispatch) => {
       const parsedToken = JSON.parse(token)
       const parsedUser = JSON.parse(user)
       if (parsedToken){
+        console.log( parsedToken );
+        
         dispatch(loginSuccess(parsedToken, parsedUser));
         }
       else{

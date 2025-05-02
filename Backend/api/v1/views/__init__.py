@@ -17,3 +17,4 @@ from api.v1.views.assignment import *
 from api.v1.views.assignment import *
 from api.v1.views.allocation import *
 from api.v1.views.flashcard import *
+from api.v1.views.auth import *
