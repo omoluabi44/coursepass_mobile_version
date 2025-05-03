@@ -5,16 +5,30 @@ import Title from '../../../components/titles';
 import {FontAwesome, AntDesign ,  MaterialIcons, FontAwesome5, FontAwesome6, Fontisto, EvilIcons  } from '@expo/vector-icons/';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../../redox/actions/loginActionCreator';
+import { useGetUserIdQuery } from '../../../redox/slice/apiSlice';
+import { useSelector } from 'react-redux';
+
 
 
 
 
 export default function Profile() {
   const dispatch = useDispatch()
+  const {user} = useSelector((state) => state.login);
+  const {data, isFetching, isSuccess, error ,isError} = useGetUserIdQuery(user.id)
+
+  
+
+  if(isFetching) return <Text>Loading...</Text>
+
+
   const logOut = () => {
     dispatch(logout())
-    console.log("log out")
+
+
+
   }
+
   return (
 
       
@@ -45,8 +59,8 @@ export default function Profile() {
               
               />
               <View className="justify-center items-center gap-2 mt-3 mb-3">
-              <Text className="text-2xl font-bold">@Omoluabi</Text>
-              <Text>Mechatronics Engineering Student </Text>
+              <Text className="text-2xl font-bold">@{data.username}</Text>
+              <Text> {data.university.department} Student </Text>
               
 
               </View>
@@ -68,7 +82,7 @@ export default function Profile() {
         </View>  
         <View className="h-20 w-20 bg-base justify-center rounded">
           <View className="items-center gap-4">
-            <Text className="text-accent text-lg">100 </Text>
+            <Text className="text-accent text-lg">{data.university.level}</Text>
             <Text className="text-xs">Level</Text>
           </View>
         </View>
@@ -80,15 +94,15 @@ export default function Profile() {
         <View  className=" gap-3  mt-5">
           <View className="bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
           <FontAwesome6 name="user" size={24} color="black" />
-          <Text className="text-sm"> Ogunleye Emmanuel </Text>
+          <Text className="text-sm"> {data.Fname +" "+ data.Lname} </Text>
           </View>
           <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
           <Fontisto name="email" size={24} color="black" />
-          <Text className="text-xs"> emmanuelogunleye441999@gmail.com </Text>
+          <Text className="text-xs"> {data.email} </Text>
           </View>
           <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
           <EvilIcons name="sc-telegram" size={24} color="black" />
-          <Text className="text-sm"> +2348075003645 </Text>
+          <Text className="text-sm"> {data.whatsap_num} </Text>
           </View>
         
         </View>
@@ -100,15 +114,15 @@ export default function Profile() {
         <View  className=" gap-3  mt-5">
           <View className="bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
           <FontAwesome name="university" size={24} color="black" />
-          <Text className="text-xs"> Lagos State University of Science and Technology </Text>
+          <Text className="text-xs"> {data.university.university} </Text>
           </View>
           <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
           <MaterialIcons name="engineering" size={24} color="black" />
-          <Text className="text-xs">College of Engineering</Text>
+          <Text className="text-xs">{data.university.College}</Text>
           </View>
           <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
           <FontAwesome5 name="robot" size={24} color="black" />
-          <Text className="text-xs">Mechatronics Engineer </Text>
+          <Text className="text-xs">{data.university.department}</Text>
           </View>
         
         </View>

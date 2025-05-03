@@ -1,23 +1,11 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { useGetUserIdQuery } from '../../../../redox/slice/apiSlice';
-import { useSelector } from 'react-redux';
+
 
 
 
 export default function ChatAi() {
-  const {user} = useSelector((state) => state.login);
-const {data, isFetching, isSuccess, error ,isError} = useGetUserIdQuery(user.id)
-  console.log(data); 
-  
 
-  if(isFetching) return <Text>Loading...</Text>
-if (isError){
-  if (error.status === 401) {
-    
-  }
-}
-  
 
   
   

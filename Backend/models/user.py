@@ -19,6 +19,7 @@ class User(BaseModel, Base):
     is_verified = Column(Boolean, default=False)
     code_expires_at = Column(DateTime, nullable=True)
     universityID = Column(String(60), ForeignKey("university.id"), nullable=True)
+    whatsap_num =  Column(String(20), nullable=True)
     
     university = relationship("University", back_populates="student")
     courses = relationship("Courses", secondary="enrollments", back_populates="students")

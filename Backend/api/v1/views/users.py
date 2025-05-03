@@ -41,6 +41,7 @@ def get_user(user_id):
     if not user:
           abort(404)
     user_dict = user.to_dict()
+ 
     if user.university:
         user_dict["university"] = user.university.to_dict()
     else:

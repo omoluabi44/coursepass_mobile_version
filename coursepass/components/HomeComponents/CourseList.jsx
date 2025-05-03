@@ -1,30 +1,24 @@
 import { View, Text, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { router } from 'expo-router';
-
+import { useGetUserEnrollQuery } from '../../redox/slice/apiSlice';
+import { useSelector } from 'react-redux';
 export default function CourseList() {
+  const {user} = useSelector((state) => state.login);
+  const {data, isFetching, isSuccess, error ,isError} = useGetUserEnrollQuery(user.id)
+  if(isFetching) return <Text>Loading...</Text>
+  console.log(data);
+  
+  
   const handleOpenCourse = () => {
     router.push('./courseDetails');
   };
 
-  const courseDetails = [
-    { id: 1, courseId: 'PHY101', level: "100lv" },
-    { id: 2, courseId: 'PHY102', level: "200lv" },
-    { id: 3, courseId: 'PHY103', level: "100lv" },
-    { id: 4, courseId: 'PHY104', level: "100lv" },
-    { id: 5, courseId: 'PHY105', level: "100lv" },
-    { id: 6, courseId: 'PHY106', level: "100lv" },
-    { id: 7, courseId: 'PHY107', level: "100lv" },
-    { id: 8, courseId: 'PHY108', level: "100lv" },
-    { id: 9, courseId: 'PHY109', level: "100lv" },
-    { id: 10, courseId: 'PHY110', level: "100lv" },
-    { id: 11, courseId: 'PHY111', level: "200lv" }
-  ];
 
   return (
     <ScrollView className="px-4 mt-5">
       <View className="flex flex-wrap flex-row justify-between">
-        {courseDetails.map((course) => (
+        {data.map((course) => (
           <TouchableOpacity key={course.id} onPress={handleOpenCourse} className="w-[48%] h-[150px] mb-4">
             <ImageBackground
               source={require('../../assets/images/gami.webp')}
@@ -35,8 +29,8 @@ export default function CourseList() {
       
                 <View className="absolute bottom-2 left-2 right-2 bg-secondary h-8 mt-5 rounded-lg border-accent border-[1px]">
                   <View className="flex-row justify-around items-center h-full">
-                    <Text className="text-accent font-bold">{course.level}</Text>
-                    <Text className="text-accent font-bold">{course.courseId}</Text>
+                
+                    <Text className="text-accent font-bold">{course.courseID}</Text>
                   </View>
                 </View>
               </View>

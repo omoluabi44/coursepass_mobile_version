@@ -73,12 +73,12 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     const refreshResult = await baseQuery(
       {
         url: 'auth/refresh',
-        method: 'POST', // Change to POST
+        method: 'POST', 
         headers: {
-          'Content-Type': 'application/json', // Required for JSON body
-          'Accept': 'application/json', // Ensure JSON response
+          'Content-Type': 'application/json',
+          'Accept': 'application/json', 
         },
-        body: { refresh: refreshToken }, // Send refresh token in JSON body
+        body: { refresh: refreshToken }, 
       },
       api,
       extraOptions
@@ -130,13 +130,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       console.log('Token refresh expired');
       api.dispatch(logout()); 
     }
-    // if (refreshResult){
-    //   console.log("true");
-    //   result = await baseQuery(args, api, extraOptions);
-      
-    // } else{
-    //   console.log('Token refresh failed');
-    // }
+
   }
 
   return result;
@@ -152,9 +146,9 @@ export const api = createApi({
     getUserId: builder.query({
       query: (id) => `user/${id}`,
     }),
-    // Remove or adjust this if not needed
-    getUserRefresh: builder.query({
-      query: () => 'auth/refresh', // Only for manual testing (not for auto-refresh)
+
+    getUserEnroll: builder.query({
+      query: (id) => `enrollment/user/${id}`,
     }),
   }),
 });
@@ -162,5 +156,5 @@ export const api = createApi({
 export const { 
   useGetUserQuery, 
   useGetUserIdQuery, 
-  useGetUserRefreshQuery, // Optional
+  useGetUserEnrollQuery, 
 } = api;

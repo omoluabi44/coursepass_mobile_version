@@ -6,13 +6,21 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { useEffect } from 'react';
 import tailwindConfig from '../../../tailwind.config';
 import { View, Text,Image } from 'react-native'
+import { useGetUserIdQuery } from '../../../redox/slice/apiSlice';
+import { useSelector } from 'react-redux';
 
 
 
 const CustomDrawer = (props)=>{
   const customColors = tailwindConfig.theme.extend.colors;
   const pathName = usePathname()
-
+  const {user} = useSelector((state) => state.login);
+  const {data, isFetching, isSuccess, error ,isError} = useGetUserIdQuery(user.id)
+  
+    
+  
+    if(isFetching) return <Text>Loading...</Text>
+    console.log(data.id); 
   return(
     <DrawerContentScrollView  {...props}>
       <View className=" bg-secondary rounded items-center mb-3">
@@ -22,7 +30,7 @@ const CustomDrawer = (props)=>{
         <Image 
         className="w-40 h-40 rounded-full mb-3 "
         source ={require('../../../assets/images/profile.jpg')}/>
-        <Text> Ogunleye emmanuel </Text>
+        <Text>{data.Fname +" "+ data.Lname} </Text>
         </View>
        
         

@@ -160,42 +160,29 @@ def login_user():
         
         ), 200
 
-@app_views.route('/auth/expire', methods=['GET'])
-@jwt_required()  # Require access token, not refresh
-def expire_token():
-    jti = get_jwt()['jti']  # Get unique token ID
-    token_blacklist.add(jti)  # Add it to the blacklist
-    return jsonify({"msg": "Access token has been expired manually."}), 200
 
 
 
 
 @app_views.route('/auth/refresh', methods=['POST'])
 def refresh_token():
-    # Expect JSON payload with refresh token
     data = request.get_json()
     if not data or 'refresh' not in data:
         return jsonify({"msg": "Missing refresh token in request body"}), 400
 
     refresh_token = data['refresh']
-    print("Received headers:", request.headers)  # Debug: Check if the header is received
+    print("Received headers:", request.headers) 
 
-    # Manually verify the refresh token
     try:
-        # Set the refresh token in the JWT context for validation
         from flask_jwt_extended import decode_token
         decoded_token = decode_token(refresh_token)
-        
-        # Ensure it's a refresh token
         if decoded_token.get('type') != 'refresh':
             return jsonify({"msg": "Invalid token type, must be a refresh token"}), 401
 
-        # Validate token and get identity
-        identity = decoded_token['sub']  # 'sub' contains the user identity
+        identity = decoded_token['sub']  
         new_access_token = create_access_token(identity=identity)
         
         return jsonify({"access": new_access_token})
 
     except Exception as e:
-        # Handle invalid or expired tokens
         return jsonify({"msg": "Invalid or expired refresh token"}), 401

@@ -58,6 +58,7 @@ def post_enrollment():
     print(user)
     if not user:
         abort(404)
+    # get user enroll courses
     user_courses = []
     for i in user.courses:
         user_courses.append(i.courseID)
