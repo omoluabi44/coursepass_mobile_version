@@ -16,15 +16,18 @@ from models.quize import Quize
 from models.enrollment import Enrollment
 from models.score import Score
 from models.assignment import Assignment
+from models.universities import Universities
 from models.allocation import Allocation
 from models.flashcard import  Flashcard
+from models.college import College
+from models.department import Department
 from hashlib import md5
 
 classes = {
             "Note":Note,"User":User, "BaseModel": BaseModel,"University":University, 
             "Courses": Courses,  "Outline": Outline, 
             "Quize":Quize,"Enrollment":Enrollment, "Score":Score, "Assignment":Assignment, "Allocation":Allocation,
-            "Flashcard":Flashcard
+            "Flashcard":Flashcard, "Universities":Universities, "College":College,"Department":Department
           }
 
 

@@ -7,39 +7,41 @@ import tailwindConfig from "../../../tailwind.config";
 import Animated from 'react-native-reanimated';
 import {Feather, MaterialIcons } from '@expo/vector-icons/';
 import GoBackBtn from '../../../components/goBackButton';
+import { useRoute } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { useGetCourseQuery } from '../../../redox/slice/apiSlice';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function CourseDetails() {
-  // const fontsLoaded = useFonts()
+  const route = useRoute();  
+  const { courseId } = route.params; 
+  const {data, isFetching, isSuccess, error ,isError} = useGetCourseQuery(courseId)
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const navigation = useNavigation();
+
+  if(isFetching) return <Text>Loading...</Text>
+
+  console.log(data);
+  
+
+
 
 
   const customColors = tailwindConfig.theme.extend.colors;
-  const handleNote = () => {router.push('./note')};
+  
+  const handleNote = (outlineID) => {
+    // router.push('./note')
+  navigation.navigate('note', { outlineId: outlineID });
+
+
+  
+  };
   const handleAssignment = () => {router.push('./assignmentDetails')};
   const handleMaterials = () => {router.push('./materialsDetails')};
   const handleFlashcard = () => {router.push('./flashCardDetails')};
  
-  // const handlesShowDetails = () => {
-  //   setShowDetails(!showDetails);
-  // }
-  const courseOutline =[
-  {week: 1, title: "intro  to physcs"},
-  {week: 2, title: "heat transfer"},
-  {week: 3, title: "temperature "},
-  {week: 4, title: "thermodynamics"},
-  {week: 5, title: "fluid mechanics"},
-  {week: 6, title: "waves"},
-  {week: 7, title: "light"},
-  {week: 8, title: "electricity"},
-  {week: 9, title: "magnetism"},
-  {week: 10, title: "modern physics"},
-  {week: 11, title: "quantum mechanics"},
-  {week: 12, title: "nuclear physics"},
-  {week: 13, title: "relativity"},
-  {week: 14, title: "astrophysics"},
 
-   ]
 
   
   return (
@@ -53,20 +55,20 @@ export default function CourseDetails() {
       <View className=' flex-row items-center ml-10 h-10'>
         <GoBackBtn/>
         <View className=" ml-10  ">
-        <Text className='text-2xl text-accent font-bold' >Course Title : PHY101</Text>
+        <Text className='text-2xl text-accent font-bold' >Course Title : {courseId}</Text>
         </View>
           
       </View>
       <ScrollView>
-        {courseOutline.map((course) => {
-          const isExpanded = expandedIndex === course.week;
+        {data.map((course) => {
+          const isExpanded = expandedIndex === course.orderID;
           return (
 
            <View key={course.week} className='mx-5 mt-2 bg-base rounded-lg '> 
            <View className="bg-base h-[50px] rounded-lg flex-row  justify-between items-center px-5">
-             <Text className="text-xl text-accent font-bold"> {course.title} </Text>
+             <Text key={course.id} className="text-xl text-accent font-bold"> {course.topic} </Text>
              <EvilIcons  onPress={() =>
-                      setExpandedIndex(isExpanded ? null : course.week)
+                      setExpandedIndex(isExpanded ? null : course.orderID)
                     } name={isExpanded ? "arrow-up":"arrow-down"} size={30} color={customColors.accent} />
            </View>
            <Animated.View className={`ml-[140] mr-2 mt-5 ${isExpanded ? "":"hidden"}`}>

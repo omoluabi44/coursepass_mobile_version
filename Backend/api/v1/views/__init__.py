@@ -18,3 +18,6 @@ from api.v1.views.assignment import *
 from api.v1.views.allocation import *
 from api.v1.views.flashcard import *
 from api.v1.views.auth import *
+from api.v1.views.universities import *
+from api.v1.views.college import *
+from api.v1.views.department import *

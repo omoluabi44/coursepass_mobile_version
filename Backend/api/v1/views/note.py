@@ -39,10 +39,10 @@ def get_note(note_id):
     return jsonify(note.to_dict())
 
 
-@app_views.route('/note/<outline_id>/', methods=['POST'], strict_slashes=False)
+@app_views.route('/note/', methods=['POST'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/note/post_note.yml'))
 @jwt_required()
-def post_note(outline_id):
+def post_note():
     """
     Creates new note for a specific outline.
     """
@@ -51,11 +51,11 @@ def post_note(outline_id):
         abort(400, description="Not a JSON")
     
     data = request.get_json()
-    if 'content' not in data:
-        abort(400, description="Missing topic")
-    if 'orderID' not in data:
-        abort(400, description="Missing orderID")
-    data['outlineID'] = outline_id  
+    note_attributes = ['content', 'outlineID', 'orderID']
+    for i in note_attributes:
+        if i not in data:
+            abort(400, description=f"missing - {i}")
+
     
     note = Note(**data)  
     note.save()

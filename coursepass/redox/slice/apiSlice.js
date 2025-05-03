@@ -150,11 +150,14 @@ export const api = createApi({
     getUserEnroll: builder.query({
       query: (id) => `enrollment/user/${id}`,
     }),
+    getCourse: builder.query({
+      query: (id) => `/courses/${id}/outline`,
+    }),
   }),
 });
 
 export const { 
   useGetUserQuery, 
   useGetUserIdQuery, 
-  useGetUserEnrollQuery, 
+  useGetUserEnrollQuery, useGetCourseQuery
 } = api;

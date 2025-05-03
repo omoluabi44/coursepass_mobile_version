@@ -20,7 +20,7 @@ const CustomDrawer = (props)=>{
     
   
     if(isFetching) return <Text>Loading...</Text>
-    console.log(data.id); 
+
   return(
     <DrawerContentScrollView  {...props}>
       <View className=" bg-secondary rounded items-center mb-3">

@@ -12,6 +12,9 @@ from models.enrollment import Enrollment
 from models.assignment import Assignment
 from models.allocation import Allocation
 from models.flashcard import  Flashcard
+from models.universities import Universities
+from models.department import Department
+from models.college import College
 
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
 def status():
@@ -22,8 +25,8 @@ def status():
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def number_objects():
     """ Retrieves the number of each objects by type """
-    classes = [Courses,Outline,Questions, User, University, Note, Quize, Enrollment, Assignment, Allocation ,Flashcard]
-    names = ["courses",  "outline", "questions", "user", "university", "note", "quize", "enrollment", "assignment", "allocation", "flashcard"]
+    classes = [Courses,Outline,Questions, User, University, Note, Quize, Enrollment, Assignment, Allocation ,Flashcard, Universities, College,Department]
+    names = ["courses",  "outline", "questions", "user", "university", "note", "quize", "enrollment", "assignment", "allocation", "flashcard", "universities", "College","Department"]
 
     num_objs = {}
     for i in range(len(classes)):

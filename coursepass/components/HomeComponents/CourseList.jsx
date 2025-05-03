@@ -3,15 +3,19 @@ import React from 'react';
 import { router } from 'expo-router';
 import { useGetUserEnrollQuery } from '../../redox/slice/apiSlice';
 import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+
 export default function CourseList() {
   const {user} = useSelector((state) => state.login);
   const {data, isFetching, isSuccess, error ,isError} = useGetUserEnrollQuery(user.id)
+  const navigation = useNavigation();
+
   if(isFetching) return <Text>Loading...</Text>
-  console.log(data);
+
   
   
-  const handleOpenCourse = () => {
-    router.push('./courseDetails');
+  const handleOpenCourse = (courseID) => {
+    navigation.navigate('courseDetails',{ courseId: courseID });
   };
 
 
@@ -19,7 +23,7 @@ export default function CourseList() {
     <ScrollView className="px-4 mt-5">
       <View className="flex flex-wrap flex-row justify-between">
         {data.map((course) => (
-          <TouchableOpacity key={course.id} onPress={handleOpenCourse} className="w-[48%] h-[150px] mb-4">
+          <TouchableOpacity key={course.id} onPress={()=>handleOpenCourse(course.courseID)} className="w-[48%] h-[150px] mb-4">
             <ImageBackground
               source={require('../../assets/images/gami.webp')}
               className="w-full h-full rounded-lg overflow-hidden"
