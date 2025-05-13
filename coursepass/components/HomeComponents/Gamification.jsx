@@ -30,7 +30,7 @@ import tailwindConfig from "../../tailwind.config";
  */
 export default function Gamification() {
   const customColors = tailwindConfig.theme.extend.colors;
-   const handleSearchCourse = () => {router.push('./search')};
+   const handleSearchCourse = () => {router.push('./addNewCourse')};
    const handleLeaderboard = () => {router.push('./leaderBoard')};
    const leaderboardData =[
     { name: 'Alice', score: 120 },

@@ -89,7 +89,7 @@ export const initializeAuth = () => async (dispatch) => {
       const parsedToken = JSON.parse(token)
       const parsedUser = JSON.parse(user)
       if (parsedToken){
-        console.log( parsedToken );
+       
         
         dispatch(loginSuccess(parsedToken, parsedUser));
         }

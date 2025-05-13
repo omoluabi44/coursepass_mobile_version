@@ -14,17 +14,17 @@ from flask_jwt_extended import jwt_required
 from os.path import join, dirname
 
 
-@app_views.route('/university/<user_id>', methods=["POST"], strict_slashes=False)
+@app_views.route('auth/university/<user_id>', methods=["POST"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/university/post_uni.yml'))
-@jwt_required()
+
 def post_university(user_id):
     """
-        CREATE  a new university
+       regester university for student
     """
     if not request.get_json():
         abort(400, description="Not a JSON")
     data = request.get_json()
-    requiredField = ["university", "College", "department", "level","university_code"]
+    requiredField = ["university", "College", "department", "level"]
     for i in requiredField:
         if i not in data:
             abort(400, description=f"Missing {i}")
@@ -38,3 +38,16 @@ def post_university(user_id):
     user.save()
 
     return jsonify(instance.to_dict()), 201
+@app_views.route('/university/<university_id>', methods=['DELETE'], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/user/delete_user.yml'))
+# @jwt_required()
+def del_uni(university_id):
+    """
+    Deletes user by its ID.
+    """
+    university = storage.get_id(University, university_id)
+    if not university:
+        abort(404)
+    storage.delete(university)
+    storage.save()
+    return make_response(jsonify({}), 200)

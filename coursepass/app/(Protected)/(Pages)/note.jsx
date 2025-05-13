@@ -1,9 +1,24 @@
 import { View, Text, SafeAreaView, TouchableOpacity,ScrollView } from 'react-native'
 import React from 'react'
 import GoBackBtn from '../../../components/goBackButton';
-
+import { useGetNoteSessionQuery } from '../../../redox/slice/apiSlice';
+import { useRoute } from '@react-navigation/native';
+import MarkdownMathView from 'react-native-markdown-math-view'
 
 export default function CourseNote () {
+
+    const route = useRoute();  
+      const { outline, selectedValue } = route.params; 
+      
+       const {  data: note,  isFetching: isFetchingNote,isSuccess: isSuccessNote,  error: ErrorNote, isError: isErrorNote } = useGetNoteSessionQuery({outline, selectedValue});
+   
+       
+
+  if(isFetchingNote) return <Text>Loading...</Text>
+  if(isErrorNote) return <Text>error </Text>
+  // const {content } = data[0]
+  console.log(note.content);
+  
   return (
     <SafeAreaView>
 
@@ -21,7 +36,10 @@ export default function CourseNote () {
       </View>
       <ScrollView>
       <View className="mx-5">
-        <Text> Physics is the fundamental science that      seeks to understand the universe and everything in it. It explores the basic laws governing matter, energy, space, and time, and how they interact. From the smallest subatomic particles to the largest galaxies, physics provides the framework for explaining natural phenomena. This lesson will introduce you to the core concepts of physics, focusing on its role in describing motion and energy, which are the foundations for much of what we'll explore in this course</Text>
+        <MarkdownMathView>
+        {note.content}
+        </MarkdownMathView>
+
       </View>
       </ScrollView>
       

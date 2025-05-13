@@ -11,7 +11,7 @@ from flasgger.utils import swag_from
 # Get all courses
 @app_views.route('/courses', methods=['GET'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/courses/all_course.yml'))
-@jwt_required()
+# @jwt_required()
 def get_all_courses():
     """
     Retrieves the list of all Courses.
@@ -35,7 +35,7 @@ def get_course(course_id):
 
 
 # Create a new course
-@app_views.route('/courses', methods=['POST'], strict_slashes=False)
+@app_views.route('/course', methods=['POST'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/courses/post_course.yml'))
 @jwt_required()
 def post_course():
@@ -57,14 +57,14 @@ def post_course():
 
 
 # Update a course
-@app_views.route('/courses/<course_id>', methods=['PUT'], strict_slashes=False)
+@app_views.route('/course/<course_id>', methods=['PUT'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/courses/update_course.yml'))
-@jwt_required()
+# @jwt_required()
 def put_course(course_id):
     """
     Updates an existing Course.
     """
-    course = storage.get(Courses, course_id)
+    course = storage.get_id(Courses, course_id)
     if not course:
         abort(404)
     if not request.get_json():
@@ -80,14 +80,14 @@ def put_course(course_id):
 
 
 # Delete a course
-@app_views.route('/courses/<course_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/course/<course_id>', methods=['DELETE'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/courses/del_course.yml'))
 @jwt_required()
 def delete_course(course_id):
     """
     Deletes a Course by its ID.
     """
-    course = storage.get(Courses, course_id)
+    course = storage.get_id(Courses, course_id)
     if not course:
         abort(404)
     storage.delete(course)

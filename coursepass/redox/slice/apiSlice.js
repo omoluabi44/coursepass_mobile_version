@@ -150,8 +150,34 @@ export const api = createApi({
     getUserEnroll: builder.query({
       query: (id) => `enrollment/user/${id}`,
     }),
+    enrollUser: builder.mutation({
+      query: ({ userID, courseID }) => ({
+        url: '/enrollment',
+        method: 'POST',
+        body: { userID, courseID }, 
+      }),
+    }),
+    deEnrollUser: builder.mutation({
+      query: ({  enrollID }) => ({
+        
+        url: `/enrollment/${enrollID}`,
+        method: 'DELETE',
+      
+      }),
+     
+    }),
+    
     getCourse: builder.query({
-      query: (id) => `/courses/${id}/outline`,
+      query: (id) => `/course/${id}/outlines`,
+    }),
+    getAllCourse: builder.query({
+      query: () => "/courses",
+    }),
+    getNote: builder.query({
+      query: (id) => `/outline/${id}/notes`,
+    }),
+     getNoteSession: builder.query({
+      query: ({outline, selectedValue}) => `/note/${outline}/${selectedValue}`,
     }),
   }),
 });
@@ -159,5 +185,5 @@ export const api = createApi({
 export const { 
   useGetUserQuery, 
   useGetUserIdQuery, 
-  useGetUserEnrollQuery, useGetCourseQuery
+  useGetUserEnrollQuery, useGetCourseQuery, useGetAllCourseQuery, useEnrollUserMutation, useDeEnrollUserMutation, useGetNoteQuery, useGetNoteSessionQuery
 } = api;

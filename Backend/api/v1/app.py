@@ -21,7 +21,8 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.register_blueprint(app_views)
 cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY')
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=5)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=15)
+
 
 jwt = JWTManager(app)
 

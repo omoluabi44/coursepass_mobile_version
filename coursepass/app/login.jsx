@@ -9,6 +9,7 @@ export default function Login() {
  const [password, setPassword] = useState('')
  const [username, setUsername] = useState('')
  const [isFocused, setIsFocused] = useState(false)
+ const handleSignUp = () => {router.push('./signUp')};
  const dispatch = useDispatch();
  async function logIn() {
   try {
@@ -18,7 +19,7 @@ export default function Login() {
     router.replace("/(Protected)/(Pages)");
   } catch (error) {
     console.error("Login failed:", error);
-    // Optionally show error to user (e.g., with a toast or alert)
+
   }
 }
 
@@ -63,7 +64,7 @@ export default function Login() {
 
           <View className='flex-row justify-center p-3'>      
             <Text>dont have an account?</Text>
-            <TouchableOpacity  >
+            <TouchableOpacity onPress={handleSignUp} >
            
                 <Text className='text-accent font-bold'> Register</Text>
             </TouchableOpacity>

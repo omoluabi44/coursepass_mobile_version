@@ -32,12 +32,14 @@ def get_users():
     
 @app_views.route('/user/<user_id>', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/user/get_user.yml'))
-@jwt_required()
+# @jwt_required()
 def get_user(user_id):
     """
     retrieve  specific  user object using id
     """
     user= storage.get_id(User, user_id)
+    print(user_id)
+    print(user)
     if not user:
           abort(404)
     user_dict = user.to_dict()
@@ -112,12 +114,13 @@ def update_user(user_id):
     return make_response(jsonify(user_dict), 200)
 @app_views.route('/user/<user_id>', methods=['DELETE'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/user/delete_user.yml'))
-@jwt_required()
+# @jwt_required()
 def del_user(user_id):
     """
     Deletes user by its ID.
     """
     user = storage.get_id(User, user_id)
+    print(user)
     if not user:
         abort(404)
     storage.delete(user)

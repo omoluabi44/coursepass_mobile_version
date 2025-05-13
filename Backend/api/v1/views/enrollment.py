@@ -23,12 +23,19 @@ from flasgger.utils import swag_from
 
 @app_views.route('/enrollment/user/<user_id>/', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/enrollment/all_enrollment.yml'))
-@jwt_required()
+# @jwt_required()
 def get_enrollment_user(user_id):
-    user = storage.get_id(User,user_id )
-    if not user:
-        abort(404)
-    user_course_dict = [user.to_dict() for user in user.courses]
+    """
+    get user enrolled courses
+    """
+    # user = storage.get_id(User,user_id )
+    # if not user:
+    #     abort(404)
+    # user_course_dict = [user.to_dict() for user in user.courses]
+    session = storage._DBStorage__session
+  
+    enrollments = session.query(Enrollment).filter(Enrollment.userID == user_id).all()
+    return [en.to_dict() for en in enrollments]
 
     return make_response(jsonify(user_course_dict),200)
 @app_views.route('/enrollment/course/<course_id>/', methods=["GET"], strict_slashes=False)
@@ -47,15 +54,16 @@ def get_enrollment_course(course_id):
 @jwt_required()
 def post_enrollment():
     """
-    Creates a quize
+    assigned courses for  user
     """
     if not request.get_json():
         abort(400, description="Not a JSON")
        
     data = request.get_json()
     user_id = data.get('userID')
+    course_id = data.get('courseID')
     user = storage.get_id(User,user_id )
-    print(user)
+    print(user_id,course_id)
     if not user:
         abort(404)
     # get user enroll courses

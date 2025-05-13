@@ -11,10 +11,10 @@ from datetime import datetime, timedelta
 class University(BaseModel, Base):
     __tablename__= "university"
     university =  Column(String(128), nullable=False)
-    university_code =  Column(String(128), nullable=False)
     College =  Column(String(128), nullable=False)
     department =  Column(String(128), nullable=False)
     level =  Column(Integer, nullable=False)
+    
     student = relationship("User", back_populates="university", cascade="all, delete-orphan")
 
    

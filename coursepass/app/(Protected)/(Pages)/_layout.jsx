@@ -8,15 +8,20 @@ import tailwindConfig from '../../../tailwind.config';
 import { View, Text,Image } from 'react-native'
 import { useGetUserIdQuery } from '../../../redox/slice/apiSlice';
 import { useSelector } from 'react-redux';
+import { logout } from '../../../redox/actions/loginActionCreator';
+import { useDispatch } from 'react-redux';
 
 
 
 const CustomDrawer = (props)=>{
+  const dispatch = useDispatch()
   const customColors = tailwindConfig.theme.extend.colors;
   const pathName = usePathname()
   const {user} = useSelector((state) => state.login);
   const {data, isFetching, isSuccess, error ,isError} = useGetUserIdQuery(user.id)
+
   
+
     
   
     if(isFetching) return <Text>Loading...</Text>

@@ -17,7 +17,7 @@ def get_universities():
     Retrieves the list of all universities.
     """
     courses = storage.all(Universities).values()
-    return jsonify([course.to_dict() for course in courses])
+    return make_response(jsonify([course.to_dict() for course in courses]),200)
 
 @app_views.route('/universities', methods=['POST'], strict_slashes=False)
 # @swag_from(join(dirname(__file__), 'documentation/note/post_note.yml'))

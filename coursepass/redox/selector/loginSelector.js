@@ -15,7 +15,7 @@ export const selectError = (state) => state.login.error;
 export const selectisAuthenticated = createSelector(
     [selectIsUserLoggedIn, selectToken],
     (isUserLoggedIn, token) => {
-        console.log("this is from selector file "+ isUserLoggedIn, token);
+        
         
        
         

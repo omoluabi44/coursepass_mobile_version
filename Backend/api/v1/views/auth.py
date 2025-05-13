@@ -29,7 +29,7 @@ def post_user():
     if not request.get_json():
         abort(400, description="Not a JSON")
     data = request.get_json()
-    requiredField = ["username", "password", "email","Lname", "Fname"]
+    requiredField = ["username", "password", "email","Lname", "Fname", "whatsap_num"]
     for i in requiredField:
         if i not in data:
             abort(400, description=f"Missing {i}")
@@ -98,22 +98,28 @@ def verify():
             abort(400, description=f"Missing {i}")
     username = data["username"]
     code = data["code"]
+    print("this is from user" , code)
+    
     user = storage.get_username(User, username)
+    user_dict = user.to_dict()
+    
 
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return make_response(jsonify({"error": "User not found"}), 404)
     if user.is_verified:
-        return jsonify({"error": "User already verified"}), 400
+        return make_response(jsonify({"error": "User already verified"}), 400)
 
     if user.verification_code != code:
-         return jsonify({"error": "Invalid Verification code"}), 400
+         return make_response(jsonify({"error": "Invalid Verification code"}), 400)
     
     if datetime.utcnow() > user.code_expires_at:
-        return jsonify({"error": "Verification code expired"})
+        return make_response(jsonify({"error": "Verification code expired"}), 400)
     user.is_verified = True
     user.verification_code = None
+    
     storage.save()
-    return jsonify({"message":"verify!"})
+  
+    return make_response(jsonify(user_dict), 200)
 
 @app_views.route('/auth/login', methods=["POST"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/user/login.yml'))
@@ -160,15 +166,11 @@ def login_user():
         
         ), 200
 
-
-
-
-
 @app_views.route('/auth/refresh', methods=['POST'])
 def refresh_token():
     data = request.get_json()
     if not data or 'refresh' not in data:
-        return jsonify({"msg": "Missing refresh token in request body"}), 400
+        return make_response(jsonify({"msg": "Missing refresh token in request body"}), 400)
 
     refresh_token = data['refresh']
     print("Received headers:", request.headers) 
@@ -177,12 +179,12 @@ def refresh_token():
         from flask_jwt_extended import decode_token
         decoded_token = decode_token(refresh_token)
         if decoded_token.get('type') != 'refresh':
-            return jsonify({"msg": "Invalid token type, must be a refresh token"}), 401
+            return make_response(jsonify({"msg": "Invalid token type, must be a refresh token"}), 401)
 
         identity = decoded_token['sub']  
         new_access_token = create_access_token(identity=identity)
         
-        return jsonify({"access": new_access_token})
+        return make_response(jsonify({"access": new_access_token}))
 
     except Exception as e:
-        return jsonify({"msg": "Invalid or expired refresh token"}), 401
+        return make_response(jsonify({"msg": "Invalid or expired refresh token"}), 401)

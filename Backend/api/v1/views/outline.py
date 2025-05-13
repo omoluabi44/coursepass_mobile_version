@@ -8,7 +8,7 @@ from os.path import join, dirname
 from flask_jwt_extended import  jwt_required
 from flasgger.utils import swag_from
 
-@app_views.route('/courses/<course_id>/outline', methods=['GET'], strict_slashes=False)
+@app_views.route('/course/<course_id>/outlines', methods=['GET'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/outline/all_outline.yml'))
 @jwt_required()
 def get_course_content(course_id):

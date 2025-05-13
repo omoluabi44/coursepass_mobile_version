@@ -1,27 +1,83 @@
-import { View, Text, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
+import { View, Text, ImageBackground, TouchableOpacity, ScrollView ,RefreshControl} from 'react-native';
+import { useDeEnrollUserMutation  } from '../../redox/slice/apiSlice';
+import React, {useCallback, useState,useEffect}from 'react'
 import { router } from 'expo-router';
 import { useGetUserEnrollQuery } from '../../redox/slice/apiSlice';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import {FontAwesome} from '@expo/vector-icons/';
+import PopUp from "../toast"
+
 
 export default function CourseList() {
   const {user} = useSelector((state) => state.login);
-  const {data, isFetching, isSuccess, error ,isError} = useGetUserEnrollQuery(user.id)
+  const {data, isFetching, isSuccess, error ,isError,refetch } = useGetUserEnrollQuery(user.id)
+   const [deEnrollUser, { isLoading: isDeEnrolling, isSuccess: deEnrollSuccess, isError: enrollError, error: enrollErrorData }] = useDeEnrollUserMutation();
   const navigation = useNavigation();
 
-  if(isFetching) return <Text>Loading...</Text>
 
+  useEffect(() => {
+    if (deEnrollSuccess) {
+      PopUp({ type: "success", title: "Successful", message: "De-enrollment successful!" });
+      
+    }
+   
+  }, [deEnrollSuccess]);
+
+ const handleNav = () => {router.push('./addNewCourse')};
+  if(isFetching) return (null)
+  if(data.length === 0){
+    return(
+      <View className="flex-1  ">
+        <View className="mt-10 items-center" >
+          <Text>
+            Your dashboard is empty, add new course!!!
+          </Text>
+        </View >
+         <View className=" flex-1 justify-center items-center"  style={{marginBottom: 250}}>
+          <TouchableOpacity onPress={handleNav}>
+          <FontAwesome name="plus" size={40} color="blue" />
+          </TouchableOpacity>
+       
+      <Text > Add new course</Text>
+     </View>
+        
+      </View>
+     
+    )
+ 
+   
+  }
+  
   
   
   const handleOpenCourse = (courseID) => {
     navigation.navigate('courseDetails',{ courseId: courseID });
   };
 
-
+  const handleDel = async (enrollID) => { 
+    
+    
+    try {
+      await deEnrollUser({enrollID}).unwrap();
+      refetch()
+      console.log('De-enrollment successful');
+    } catch (err) {
+     
+    } 
+  };
   return (
-    <ScrollView className="px-4 mt-5">
-      <View className="flex flex-wrap flex-row justify-between">
+    <View
+    style={{height:400}}
+    >
+
+   
+    <ScrollView className="px-4 mt-5 " 
+    
+     > 
+      <View className="flex flex-wrap   flex-row justify-between">
+        
+    
         {data.map((course) => (
           <TouchableOpacity key={course.id} onPress={()=>handleOpenCourse(course.courseID)} className="w-[48%] h-[150px] mb-4">
             <ImageBackground
@@ -30,7 +86,11 @@ export default function CourseList() {
               resizeMode="cover"
             >
               <View className="flex-1 p-2 bg-accent/10 rounded-lg">
-      
+              <TouchableOpacity  onPress={()=>handleDel(course.id)}
+              >
+              <FontAwesome name="close" size={24} color="red" />
+              </TouchableOpacity>
+              
                 <View className="absolute bottom-2 left-2 right-2 bg-secondary h-8 mt-5 rounded-lg border-accent border-[1px]">
                   <View className="flex-row justify-around items-center h-full">
                 
@@ -43,5 +103,6 @@ export default function CourseList() {
         ))}
       </View>
     </ScrollView>
+    </View>
   );
 }

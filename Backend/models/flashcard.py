@@ -10,7 +10,7 @@ from models.user import User
 
 class Flashcard(BaseModel, Base):
     __tablename__ = 'Flashcards'
-    enrollmentID = Column(String(120), ForeignKey('enrollments.id'), nullable=False, ) 
+    enrollmentID = Column(String(120), ForeignKey('enrollments.id', ondelete='CASCADE'), nullable=False)
     outlineID = Column(String(120), ForeignKey('outline.id'), nullable=False)
     question = Column(String(120), nullable=False)
     answer = Column(String(120), nullable=False)

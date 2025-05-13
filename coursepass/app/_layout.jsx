@@ -21,6 +21,9 @@ import { store } from "../redox/store";
 import {selectisAuthenticated} from "../redox/selector/loginSelector"
 import {initializeAuth} from "../redox/actions/loginActionCreator"
 import { useEffect, useState } from "react";
+import { ToastProvider } from 'react-native-toast-notifications'
+import Toast from 'react-native-toast-message';
+
 
 
 const RootLayoutNav = () => {
@@ -70,7 +73,11 @@ const RootLayoutNav = () => {
 export default function RootLayout() {
   return(
     <Provider store={store}>
-    <RootLayoutNav/>
+     
+      <RootLayoutNav/>
+      <Toast/>
+
+    
   </Provider>
 
   )
