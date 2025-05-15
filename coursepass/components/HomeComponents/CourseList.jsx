@@ -1,12 +1,12 @@
 import { View, Text, ImageBackground, TouchableOpacity, ScrollView ,RefreshControl} from 'react-native';
 import { useDeEnrollUserMutation  } from '../../redox/slice/apiSlice';
-import React, {useCallback, useState,useEffect}from 'react'
-import { router } from 'expo-router';
+import React, { useEffect}from 'react'
 import { useGetUserEnrollQuery } from '../../redox/slice/apiSlice';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import {FontAwesome} from '@expo/vector-icons/';
 import PopUp from "../toast"
+import { router } from 'expo-router';
 
 
 export default function CourseList() {
@@ -16,6 +16,8 @@ export default function CourseList() {
   const navigation = useNavigation();
 
 
+      
+
   useEffect(() => {
     if (deEnrollSuccess) {
       PopUp({ type: "success", title: "Successful", message: "De-enrollment successful!" });
@@ -23,9 +25,13 @@ export default function CourseList() {
     }
    
   }, [deEnrollSuccess]);
+    if(isFetching)return (null)
 
- const handleNav = () => {router.push('./addNewCourse')};
-  if(isFetching) return (null)
+ const handleNav = () => {
+ navigation.navigate('addNewCourse');
+
+};
+
   if(data.length === 0){
     return(
       <View className="flex-1  ">

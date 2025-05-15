@@ -6,7 +6,6 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { useEffect } from 'react';
 import tailwindConfig from '../../../tailwind.config';
 import { View, Text,Image } from 'react-native'
-import { useGetUserIdQuery } from '../../../redox/slice/apiSlice';
 import { useSelector } from 'react-redux';
 import { logout } from '../../../redox/actions/loginActionCreator';
 import { useDispatch } from 'react-redux';
@@ -18,13 +17,13 @@ const CustomDrawer = (props)=>{
   const customColors = tailwindConfig.theme.extend.colors;
   const pathName = usePathname()
   const {user} = useSelector((state) => state.login);
-  const {data, isFetching, isSuccess, error ,isError} = useGetUserIdQuery(user.id)
+
 
   
 
     
   
-    if(isFetching) return <Text>Loading...</Text>
+ 
 
   return(
     <DrawerContentScrollView  {...props}>
@@ -35,10 +34,10 @@ const CustomDrawer = (props)=>{
         <Image 
         className="w-40 h-40 rounded-full mb-3 "
         source ={require('../../../assets/images/profile.jpg')}/>
-        <Text>{data.Fname +" "+ data.Lname} </Text>
+        <Text>{user.Fname +" "+ user.Lname}  </Text>
         </View>
        
-        
+    
        
       </View>
         <DrawerItem 

@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, StatusBar } from 'react-native'
 import React, {useState,useEffect}from 'react'
 import {DrawerToggleButton} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +19,7 @@ export default function Header() {
                 <Text> hello  {user.Fname}👋 </Text>
             </View>
         </View>
+        <StatusBar className="bg-black"/>
         
         <View className='flex-row justify-between   h-[70px] '>
             <View className='flex-row '> 

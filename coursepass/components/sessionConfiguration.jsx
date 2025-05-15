@@ -1,4 +1,4 @@
-import { View, Text, useWindowDimensions ,StyleSheet, ActivityIndicator, TouchableOpacity} from 'react-native'
+import { View, Text, useWindowDimensions ,StyleSheet, ActivityIndicator, TouchableOpacity,Platform} from 'react-native'
 import React, { useState,useEffect } from 'react'
 import {FontAwesome} from '@expo/vector-icons/';
 import { useGetNoteQuery, useGetNoteSessionQuery } from '../redox/slice/apiSlice';
@@ -61,9 +61,18 @@ export default function Session({isOpen, setIsOpen, outline}) {
                         {noteData.map((note,id)=>{
                             return(
                                 
-                            <Picker.Item key={id} label={note.session} value={note.session} />
+                            <Picker.Item key={id} label={note.session} value={note.session} 
+                             color={Platform.select({
+                                    ios: '#333',
+                                    android: selectedValue === note.session ? '#FFA500' : '#444'
+                                })}
+                                style={{
+                                    fontSize: Platform.OS === 'android' ? 14 : 16,
+                                    fontFamily: 'Arial'
+                                }}
+                            />
                             
-                      
+                     
                             )
                         })}
                           </Picker>

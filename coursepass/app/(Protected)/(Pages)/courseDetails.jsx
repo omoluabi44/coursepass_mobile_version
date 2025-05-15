@@ -1,5 +1,5 @@
 import { View, Text,ScrollView, TouchableOpacity } from 'react-native'
-import React ,{useState} from 'react'
+import React ,{useEffect, useState} from 'react'
 import { Link, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
@@ -20,47 +20,23 @@ export default function CourseDetails() {
   const route = useRoute();  
   const { courseId } = route.params; 
   const [outline, setOutlineId] = useState("")
-  
-  const {data: courseData,  isFetching: isCourseFetching, isSuccess: isCourseSuccess,  error: courseError,  isError: isCourseError,} = useGetCourseQuery(courseId);
-
-  // const {  data: noteData,  isFetching: isNoteFetching,isSuccess: isNoteSuccess,  error: noteError, isError: isNoteError,refetch: refetchNotes,} = useGetNoteQuery(courseData.id);
+    const customColors = tailwindConfig.theme.extend.colors;
+  const {data: courseData,  isFetching: isCourseFetching, isSuccess: isCourseSuccess,  error: courseError,  isError: isCourseError, refetch} = useGetCourseQuery(courseId);
   const [expandedIndex, setExpandedIndex] = useState(null);
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false)
+ 
 
-  
   
 
 
   if(isCourseFetching) return <Text>Loading...</Text>
 
-  if(courseError) {
 
-    
-    return (
-      <View className="h-full justify-center items-center">
-  <     Text> Content {error.data.error}</Text>
-      </View>
-  )
-  }
-  
-
-
-
-
-  const customColors = tailwindConfig.theme.extend.colors;
   
   const handleNote = (outlineId) => {
-  //   console.log(outlineId);
-    
-
     setOutlineId(outlineId.id)
-  
-  // // navigation.navigate('note', { outlineId: outlineId });
     setIsOpen(true)
-  
-  
-
   };
  
   
@@ -73,18 +49,13 @@ export default function CourseDetails() {
   
   return (
     <SafeAreaView >
-
-    
     <View className=" h-full ">
-     
-
      <Session isOpen={isOpen} setIsOpen={setIsOpen}  outline={outline}/>
       <View className=' flex-row items-center ml-10 h-10'>
         <GoBackBtn/>
         <View className=" ml-10  ">
         <Text className='text-2xl text-accent font-bold' >Course Title : {courseId}</Text>
-        </View>
-          
+        </View>  
       </View>
       <ScrollView>
         {courseData.map((course, id) => {
