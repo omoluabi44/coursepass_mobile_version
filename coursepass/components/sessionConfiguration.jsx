@@ -7,12 +7,13 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-export default function Session({isOpen, setIsOpen, outline}) {
+
+export default function Session({isOpen, setIsOpen, outline, courseId, topic}) {
     const {height, width }= useWindowDimensions()
       const navigation = useNavigation();
     const [selectedValue, setSelectedValue] = useState();
     const {  data: noteData,  isFetching: isNoteFetching,isSuccess: isNoteSuccess,  error: noteError, isError: isNoteError,refetch: refetchNotes,} = useGetNoteQuery(outline);
-  //set selectedValue to first element upon load
+
     useEffect(() => {
         if (noteData && noteData.length > 0 && !selectedValue) {
             setSelectedValue(noteData[0].session);
@@ -22,21 +23,10 @@ export default function Session({isOpen, setIsOpen, outline}) {
     console.log(outline);
     
     if(isNoteFetching) return <Text>loading </Text>
-    if (isNoteError) {
-        console.log(noteError);
-        
-        return (
-        <View className=" top-50 items-center justify-center">
-                      <Text> hello</Text>
-        </View>
-       
-        )}
-
-    console.log("this", noteData);
-    
+    if (isNoteError) return (null)
     
    const handleSelect =( )=>{
-     navigation.navigate('note', {selectedValue: selectedValue, outline:outline});
+     navigation.navigate('note', {selectedValue: selectedValue, outline:outline, courseId:courseId, topic:topic});
 }
     
     const handleClose = ()=>{

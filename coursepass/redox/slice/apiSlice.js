@@ -179,11 +179,54 @@ export const api = createApi({
      getNoteSession: builder.query({
       query: ({outline, selectedValue}) => `/note/${outline}/${selectedValue}`,
     }),
+    //flashcards
+      getFlashcard: builder.query({
+      query: (id) => `/flashcards/${id}`,
+    }),
+     getFlashcardOutline: builder.query({
+      query: (id) => `/flashcard/${id}/outline`,
+    }),
+      createFlashCard: builder.mutation({
+      query: ({ outlineID, courseID, question, answer, userID}) => ({
+        url: '/flashcard',
+        method: 'POST',
+        body: { outlineID, courseID,question,answer,userID }, 
+      }),
+    }),
+    //assignment
+    getAssignmentAlloc: builder.query({
+      query: (id) => `/allocation/${id}/user`,
+    }),
+     createAssignment: builder.mutation({
+      query: ({ courseID, title, due_date, detail, }) => ({
+        url: '/assignment',
+        method: 'POST',
+        body: {courseID,title,due_date,detail }, 
+      }),
+    }),
+    getAssignment: builder.query({
+      query: (courseID) => `/assignment/${courseID}`,
+    }),
+     allocate: builder.mutation({
+      query: ({userID, courseID, assignmentID }) => ({
+        url: '/allocation',
+        method: 'POST',
+        body: {userID, courseID,assignmentID }, 
+      }),
+    }),
+
+
   }),
 });
 
 export const { 
   useGetUserQuery, 
   useGetUserIdQuery, 
-  useGetUserEnrollQuery, useGetCourseQuery, useGetAllCourseQuery, useEnrollUserMutation, useDeEnrollUserMutation, useGetNoteQuery, useGetNoteSessionQuery
+  useGetUserEnrollQuery, useGetCourseQuery, useGetAllCourseQuery, useEnrollUserMutation, useDeEnrollUserMutation, useGetNoteQuery, useGetNoteSessionQuery, useGetFlashcardQuery,
+  useGetFlashcardOutlineQuery,
+  useCreateFlashCardMutation,
+  useGetAssignmentAllocQuery,
+  useCreateAssignmentMutation,
+  useLazyGetAssignmentQuery,
+  useAllocateMutation
 } = api;

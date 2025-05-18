@@ -20,6 +20,7 @@ class User(BaseModel, Base):
     code_expires_at = Column(DateTime, nullable=True)
     universityID = Column(String(60), ForeignKey("university.id"), nullable=True)
     whatsap_num =  Column(String(20), nullable=True)
+    role = Column(String(60), nullable=True)
   
 
     

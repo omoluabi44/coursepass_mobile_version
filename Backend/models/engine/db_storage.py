@@ -126,7 +126,7 @@ class DBStorage:
         if cls not in classes.values():
             return None
 
-        return self.__session.query(cls).filter_by(userID=id, courseID=course_id).first()
+        return self.__session.query(cls).filter_by(userID=id).first()
 
         return None
 

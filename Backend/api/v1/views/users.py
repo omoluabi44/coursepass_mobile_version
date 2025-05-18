@@ -78,7 +78,7 @@ def send_email():
 
 @app_views.route('/user/<user_id>', methods=['PUT'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/user/put_user.yml'), methods=['PUT'])
-@jwt_required()
+# @jwt_required()
 def update_user(user_id):
     """
     Updates an existing user.

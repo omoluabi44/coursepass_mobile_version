@@ -25,7 +25,8 @@ export default function CourseList() {
     }
    
   }, [deEnrollSuccess]);
-    if(isFetching)return (null)
+    if(isFetching)return (<Text>loading</Text>)
+    if(isError)return (<Text>error</Text>)
 
  const handleNav = () => {
  navigation.navigate('addNewCourse');

@@ -10,12 +10,14 @@ from models.user import User
 
 class Flashcard(BaseModel, Base):
     __tablename__ = 'Flashcards'
-    enrollmentID = Column(String(120), ForeignKey('enrollments.id', ondelete='CASCADE'), nullable=False)
-    outlineID = Column(String(120), ForeignKey('outline.id'), nullable=False)
+    # enrollmentID = Column(String(120), ForeignKey('enrollments.id', ondelete='CASCADE'), nullable=False)
+    userID = Column(String(120), ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    courseID = Column(String(120), ForeignKey('courses.courseID', ondelete='CASCADE'), nullable=False)
+    outlineID = Column(String(120), ForeignKey('outline.id', ondelete='CASCADE'), nullable=False)
     question = Column(String(120), nullable=False)
     answer = Column(String(120), nullable=False)
 
-    enrollment = relationship("Enrollment", back_populates="flashcard",  )
+    course = relationship("Courses", back_populates="flashcard",  )
     outline = relationship("Outline", back_populates="flashcard",  )
 
 

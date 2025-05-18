@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 
 class Score(BaseModel, Base):
     __tablename__ = 'scores'
-    enrollmentID = Column(String(120), ForeignKey('enrollments.id') , nullable=False )
+    enrollmentID = Column(String(120), ForeignKey('enrollments.id', ondelete='CASCADE') , nullable=False )
     score = Column(Integer, nullable=False,)
     enrollment = relationship("Enrollment", back_populates="scores")
    

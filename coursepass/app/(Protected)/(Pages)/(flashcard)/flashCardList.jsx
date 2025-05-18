@@ -1,13 +1,39 @@
-import { View, Text, SafeAreaView } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import GoBackBtn from '../../../../components/goBackButton';
 import {MaterialCommunityIcons} from '@expo/vector-icons/';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useGetFlashcardQuery } from '../../../../redox/slice/apiSlice';
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
+// import GoBackBtn from '../../../../components/goBackButton';
 
 
 export default function FlashCardList() {
+  const navigation = useNavigation()
+  const {user} = useSelector((state) => state.login);
+  const {data, isFetching, isSuccess, error ,isError,refetch }  = useGetFlashcardQuery(user.id)
+  if (isFetching)return(<Text>loading..</Text>)
+  if (isError) return(<Text>error</Text>)
+
+  
+
+  const handleFlashcardId =(id, course, topic)=>{
+    console.log(id,course,topic);
+ 
+     router.push({
+    pathname: `/${id}`,
+    params: { course, topic }
+  });
+    // router.push({ pathname: '/flashCardDetails', query: { id: 'abc123' } });
+
+    
+
+  }
   return (
     <SafeAreaView>
+     
         <View className="h-full bg-secondary2 ">
               <View className="mx-3">
                 <GoBackBtn/>
@@ -15,178 +41,40 @@ export default function FlashCardList() {
             <View className="mx-5 mt-5 ">
                 <Text className="text-2xl font-bold">FLASHCARDS </Text>
             </View>
-            <View className="mx-5 my-2 bg-base px-3 py-3 rounded-lg  ">
-                <View className="mb-3"> 
+            {data.map((coursename,id)=>{return(
+               <View key={id} className="mx-5 my-2 bg-base px-3 py-3 rounded-lg  ">
+                <View  className="mb-3"> 
                   <Text className="text-accent">
-                  PHYSICS 102 (Waves and Sound)
+                    {coursename.courseID}
                   </Text>
                 </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} className="">
-                    <View className="flex-row gap-3">
-
-                  
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
+                {coursename.outlines.map((outline,id)=>{return(
+                      <View  key={id} className="flex-row mx-1">
+                        <TouchableOpacity onPress={()=>handleFlashcardId(outline.outlineID, coursename.courseID,outline.topic)}>
+                          <View className="flex-row items-center gap-2 border-[0.3px] w-60 justify-center rounded">
                           <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
                               <View className="gap-3">
-                                    <Text>
-                                      Waves 
+                                    <Text className="text-xs">
+                                  {outline.topic}
                                     </Text>
-                                    <Text>13 cards</Text>
+                                    <Text>{outline.total_outline}</Text>
                               </View>
                           
                           </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
+                           </TouchableOpacity>
+                        
                   </View>
+                )})}
+                  
               </ScrollView>
             </View>
-            <View className="mx-5 my-2 bg-base px-3 py-3 rounded-lg  ">
-                <View className="mb-3"> 
-                  <Text className="text-accent">
-                 MATHEMATICS 102(MatriX )
-                  </Text>
-                </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} className="">
-                    <View className="flex-row gap-3">
 
-                  
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                    <Text>
-                                      Waves 
-                                    </Text>
-                                    <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                  </View>
-              </ScrollView>
-            </View>
-            <View className="mx-5 my-2 bg-base px-3 py-3 rounded-lg  ">
-                <View className="mb-3"> 
-                  <Text className="text-accent">
-                 CHEMISTRY 102 (Organic CHEMISTRY)
-                  </Text>
-                </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} className="">
-                    <View className="flex-row gap-3">
-
-                  
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                    <Text>
-                                      Waves 
-                                    </Text>
-                                    <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                  </View>
-              </ScrollView>
-            </View>
-            <View className="mx-5 my-2 bg-base px-3 py-3 rounded-lg  ">
-                <View className="mb-3"> 
-                  <Text className="text-accent">
-                  MECHATRONICS (Robotics)
-                  </Text>
-                </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} className="">
-                    <View className="flex-row gap-3">
-
-                  
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                    <Text>
-                                      Waves 
-                                    </Text>
-                                    <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                          <View className="flex-row items-center gap-2 border-[0.3px] w-40 justify-center rounded">
-                          <MaterialCommunityIcons name="cards" size={40} color="#7d7c7c" />
-                              <View className="gap-3">
-                                  <Text>
-                                    Waves 
-                                  </Text>
-                                  <Text>13 cards</Text>
-                              </View>
-                          
-                          </View>
-                  </View>
-              </ScrollView>
-            </View>
+            )})}
+           
+         
+           
+            
         </View>
     </SafeAreaView>
       

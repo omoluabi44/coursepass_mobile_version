@@ -10,11 +10,11 @@ from models.user import User
 
 class Enrollment(BaseModel, Base):
     __tablename__ = 'enrollments'
-    courseID = Column(String(120), ForeignKey('courses.courseID'), nullable=False, ) 
+    courseID = Column(String(120), ForeignKey('courses.courseID',ondelete='CASCADE'), nullable=False, ) 
     userID = Column(String(120), ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
     
     scores = relationship("Score", back_populates="enrollment",  cascade="all, delete-orphan")
-    flashcard = relationship("Flashcard", back_populates="enrollment",  cascade="all, delete-orphan")
+    # flashcard = relationship("Flashcard", back_populates="enrollment",  cascade="all, delete-orphan")
     user = relationship("User", back_populates="enrollment")
 
 

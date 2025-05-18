@@ -15,7 +15,7 @@ session = storage._DBStorage__session
 
 @app_views.route('/assignment/<course_id>', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/assignment/all_assignment.yml'))
-@jwt_required()
+# @jwt_required()
 def get_assignment(course_id):
     """
     get assignemnt by course id
@@ -33,7 +33,7 @@ def get_assignment(course_id):
 
 @app_views.route('/assignment', methods=['POST'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/assignment/post_assignment.yml'))
-@jwt_required()
+# @jwt_required()
 def post_assignment():
     """
     Creates a assignment
@@ -42,7 +42,7 @@ def post_assignment():
         abort(400, description="Not a JSON")
     
     data = request.get_json()
-    quizes_attributes = ['courseID', 'title', 'due_date']
+    quizes_attributes = ['courseID', 'title', 'due_date', "detail"]
     for i in quizes_attributes:
         if i not in data:
             abort(400, description=f"missing - {i}")

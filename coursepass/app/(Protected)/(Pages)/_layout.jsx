@@ -4,6 +4,7 @@ import { MaterialIcons, AntDesign,MaterialCommunityIcons  } from '@expo/vector-i
 import { usePathname } from 'expo-router';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { useEffect } from 'react';
+import { useGetUserIdQuery } from '../../../redox/slice/apiSlice';
 import tailwindConfig from '../../../tailwind.config';
 import { View, Text,Image } from 'react-native'
 import { useSelector } from 'react-redux';
@@ -12,14 +13,23 @@ import { useDispatch } from 'react-redux';
 
 
 
+
 const CustomDrawer = (props)=>{
   const dispatch = useDispatch()
   const customColors = tailwindConfig.theme.extend.colors;
   const pathName = usePathname()
   const {user} = useSelector((state) => state.login);
+  const {data, isFetching, isSuccess, error, isError} = useGetUserIdQuery(user.id)
+  if (isFetching)return(
+    <Text> fetching</Text>
+  )
+  if (isError)return(
+    <Text> error</Text>
+  )
 
 
   
+console.log(data.role);
 
     
   
@@ -76,6 +86,16 @@ const CustomDrawer = (props)=>{
             icon={()=>(<MaterialIcons name="insert-drive-file" size={26} color={pathName =="/materialsList"? "#fff":"#000"} />)} 
             label="Materials"  onPress={() => props.navigation.navigate('(materials)/materialsList')}
         />
+{ data.role === "HOC" ?
+ <DrawerItem
+            style={{borderRadius:10, backgroundColor: pathName=="/materialsList"? customColors.accent:customColors.base}} 
+            labelStyle={{marginLeft: -5, color:pathName=="/materialsList"? customColors.base:"#000"}} 
+            icon={()=>(<MaterialIcons name="insert-drive-file" size={26} color={pathName =="/materialsList"? "#fff":"#000"} />)} 
+            label="Upload assignment"  onPress={() => props.navigation.navigate('(assignment)/addAssignment')}
+        />
+
+:null}
+        
     </DrawerContentScrollView>
 
   )

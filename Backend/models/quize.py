@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 
 class Quize(BaseModel, Base):
     __tablename__ = 'quizes'
-    courseID = Column(String(120), ForeignKey('courses.courseID') , nullable=False )
+    courseID = Column(String(120), ForeignKey('courses.courseID', ondelete='CASCADE') , nullable=False )
     university_code =  Column(String(128), nullable=False)
     questionText = Column(String(255), nullable=False, unique=False)
     correct_answer = Column(String(120), nullable=False, unique=False)

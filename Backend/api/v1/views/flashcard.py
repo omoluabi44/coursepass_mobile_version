@@ -4,37 +4,72 @@ from models import storage
 from models.quize import Quize
 from models.flashcard import Flashcard
 from models.course import Courses
-from models.enrollment import Enrollment
+from models.user import User
+from models.outline import Outline
 import os
 from os.path import join, dirname
 from flask_jwt_extended import  jwt_required
 from flasgger.utils import swag_from
+from collections import defaultdict
 
 session = storage._DBStorage__session
 
 
 
-@app_views.route('/flashcards/<user_id>/<course_id>', methods=["GET"], strict_slashes=False)
+
+
+
+@app_views.route('/flashcards/<user_id>/', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/flashcard/all_flashcard.yml'))
-@jwt_required()
-def get_flashcard(user_id,course_id):
+# @jwt_required()
+def get_flashcard(user_id):
     """
-    get flashcard by user id and course id
+    Get flashcards grouped by course and outline, with counts
     """
-    enroll_user = storage.get_enroll_id(Enrollment,user_id,course_id )
-    if not enroll_user:
+    user = storage.get_id(User, user_id)
+    if not user:
         abort(404)
-    enroll_user_id = enroll_user.id
-    flashcards = session.query(Flashcard).filter_by(enrollmentID=enroll_user_id).all()
-    flashcard = []
-    for i in flashcards:
-     
-        flashcard.append(i.to_dict())
-  
 
-    return(make_response(jsonify(flashcard),200))
+    flashcards = session.query(Flashcard).filter_by(userID=user_id).all()
+    grouped = defaultdict(lambda: defaultdict(int))
+    for fc in flashcards:
+        grouped[fc.courseID][fc.outlineID] += 1
+
+    result = []
+    for course_id, outlines in grouped.items():
+       
+        outlines_list=[]
+        for outline,count in outlines.items():
+            outlineName = storage.get_id(Outline, outline)
+
+            print(outlineName.topic)
+            outlines_list.append({
+            "outlineID": outline,
+            "total_outline": count,
+            "topic":outlineName.topic
+        })
+        result.append({
+            "courseID": course_id,
+            "outlines": outlines_list
+        })
+
+    return make_response(jsonify(result), 200)
 
 
+
+@app_views.route('/flashcard/<outline_id>/outline', methods=["GET"], strict_slashes=False)
+# @swag_from(join(dirname(__file__), 'documentation/flashcard/all_flashcard.yml'))
+# @jwt_required()
+def get_flashcard_outline(outline_id):
+    """
+    Get flashcards by outlineId
+
+    """
+    print("executed")
+    flashcards = session.query(Flashcard).filter_by(outlineID=outline_id).all()
+    flashcard_dict = [fc.to_dict() for fc in flashcards]
+    return jsonify(flashcard_dict)
+    
 
 
 @app_views.route('/flashcard', methods=['POST'], strict_slashes=False)
@@ -48,20 +83,21 @@ def post_flashcard():
         abort(400, description="Not a JSON")
     
     data = request.get_json()
-    quizes_attributes = ['userID', 'courseID', 'outlineID','question', 'answer']
+    quizes_attributes = ['userID', "courseID", 'outlineID','question', 'answer']
+    print(data)
     for i in quizes_attributes:
         if i not in data:
             abort(400, description=f"missing - {i}")
 
-    course_id=data["courseID"]
-    user_id= data["userID"]
-    # print(user_id, course_id)  
-    enroll_user = storage.get_enroll_id(Enrollment,user_id,course_id )
-    if not enroll_user:
-        abort(404)
-    enroll_user_id = enroll_user.id
+    # course_id=data["courseID"]
+    # user_id= data["userID"]
+    # # print(user_id, course_id)  
+    # enroll_user = storage.get_enroll_id(Enrollment,user_id,course_id )
+    # if not enroll_user:
+    #     abort(404)
+    # enroll_user_id = enroll_user.id
     
-    data["enrollmentID"] = enroll_user_id
+    # data["enrollmentID"] = enroll_user_id
 
     instance = Flashcard(**data)
     instance.save()

@@ -9,9 +9,9 @@ from sqlalchemy.orm import relationship
 
 class Allocation(BaseModel, Base):
     __tablename__ = 'allocations'
-    assignmentID = Column(String(120),ForeignKey('assignments.id') , nullable=False,)
+    assignmentID = Column(String(120),ForeignKey('assignments.id',ondelete='CASCADE') , nullable=False,)
     userID = Column(String(120), ForeignKey('users.id') , nullable=False )
-    assign_date = Column(Date, nullable=False,)
+    # assign_date = Column(Date, nullable=False,)
     assignment = relationship("Assignment", back_populates="allocation")
     students = relationship("User", back_populates="allocation")
    

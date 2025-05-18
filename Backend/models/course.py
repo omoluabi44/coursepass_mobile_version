@@ -17,6 +17,7 @@ class Courses(BaseModel, Base):
     quize = relationship("Quize", back_populates="course_quize", cascade="all, delete-orphan")
     students = relationship("User", secondary="enrollments", back_populates="courses")
     assignments = relationship("Assignment",  back_populates="course", cascade="all, delete-orphan")
+    flashcard = relationship("Flashcard",  back_populates="course", cascade="all, delete-orphan")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

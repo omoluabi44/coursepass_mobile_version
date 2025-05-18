@@ -11,7 +11,7 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 class Note(BaseModel, Base):
     __tablename__ = 'notes'
   
-    outlineID = Column(String(60), ForeignKey('outline.id'), nullable=False)
+    outlineID = Column(String(60), ForeignKey('outline.id',ondelete='CASCADE'), nullable=False)
     content = Column(LONGTEXT, nullable=False)
     session = Column(String(60), nullable=False,)
     orderID = Column(Integer, nullable=False, )

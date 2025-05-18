@@ -20,6 +20,7 @@ export default function Profile() {
   
 
   if(isFetching) return <Text>Loading...</Text>
+  if(isError) return (<Text>error fetching your profile</Text>)
 
 
   const logOut = () => {

@@ -60,7 +60,11 @@ export default function Search() {
 
 
   if(isFetching) return <Load visible={isFetching} data="loading courses..."/>
-  if(isError) return <Text>Please check  your network</Text>
+  if(isError) {
+    console.log(error);
+    
+    return <Text>Please check  your network</Text>
+  }
 
   const handleSearch =(query)=>{
     setSearchQuery(query)
