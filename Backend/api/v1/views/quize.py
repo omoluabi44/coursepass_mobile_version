@@ -6,25 +6,45 @@ from models.course import Courses
 from os.path import join, dirname
 from flask_jwt_extended import  jwt_required
 from flasgger.utils import swag_from
-
 import os
+session = storage._DBStorage__session
 
 
-@app_views.route('/courses/<course_id>/quize', methods=["GET"], strict_slashes=False)
+@app_views.route('/course/<course_id>/quizes/<year>/<university_code>', methods=["GET"], strict_slashes=False)
+@swag_from(join(dirname(__file__), 'documentation/quize/get_quiz.yml'))
+# @jwt_required()
+def get_question(course_id, year, university_code):
+    quizes = session.query(Quize).filter_by(courseID=course_id, year=year, university_code=university_code).all()
+ 
+    
+    quize_dict = [quize.to_dict() for quize in quizes]
+    return make_response(jsonify(quize_dict),200)
+
+@app_views.route('/quiz/filter', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/quize/get_quiz.yml'))
 @jwt_required()
-def get_question(course_id):
-    course = storage.get(Courses,course_id )
-    if not course:
-        abort(404)
-    quizes_dict = [quize.to_dict() for quize in course.quize if quize.courseID == course_id]
-    
+def get_filter():
+    """
+    Return the current course, university and year for user selection
+    """
+    quizes = session.query(Quize.courseID, Quize.university_code, Quize.year).all()
    
-    return make_response(jsonify(quizes_dict),200)
+ 
+    quize_dict = [{"courseID": q.courseID, "university_code": q.university_code,"year": q.year} for q in quizes]
+    keys = ['courseID', 'university_code', 'year']
+  
+    unique_values = {key: set() for key in keys}
+    for item in quize_dict:
+        for key in keys:
+            unique_values[key].add(item[key])
+    sorted_quiz = {key: sorted(list(value)) for key, value in unique_values.items() }
+    
+    return make_response(jsonify(sorted_quiz),200)
+  
 
 @app_views.route('/quize', methods=['POST'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/quize/post_quiz.yml'))
-@jwt_required()
+# @jwt_required()
 def post_quize():
     """
     Creates a quize
@@ -32,11 +52,10 @@ def post_quize():
     if not request.get_json():
         abort(400, description="Not a JSON")
 
-    if 'university_code' not in request.get_json():
-        abort(400, description="Missing university_code")
+   
        
     data = request.get_json()
-    quizes_attributes = ['courseID', 'university_code', 'questionText', 'correct_answer', 'incorrect_answers', 'explanation']
+    quizes_attributes = ['courseID', 'university_code', 'year' ,'questionText', 'correct_answer', 'incorrect_answers', 'explanation']
     for i in quizes_attributes:
         if i not in data:
             abort(400, description=f"missing - {i}")

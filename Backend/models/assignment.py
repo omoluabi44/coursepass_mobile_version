@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 class Assignment(BaseModel, Base):
     __tablename__ = 'assignments'
     courseID = Column(String(120), ForeignKey('courses.courseID',ondelete='CASCADE') , nullable=False )
-    title = Column(String(120), nullable=False,   )
+    title = Column(String(120), nullable=False )
     due_date = Column(Date, nullable=False,)
     detail = Column(String(400), nullable=False)
     course = relationship("Courses", back_populates="assignments")

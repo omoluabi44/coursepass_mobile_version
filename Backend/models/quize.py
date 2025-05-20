@@ -11,10 +11,11 @@ class Quize(BaseModel, Base):
     __tablename__ = 'quizes'
     courseID = Column(String(120), ForeignKey('courses.courseID', ondelete='CASCADE') , nullable=False )
     university_code =  Column(String(128), nullable=False)
-    questionText = Column(String(255), nullable=False, unique=False)
-    correct_answer = Column(String(120), nullable=False, unique=False)
-    incorrect_answers = Column(JSON, nullable=False, unique=False)
-    explanation=  Column(String(500), nullable=False, unique=False)
+    questionText = Column(String(255), nullable=False, )
+    correct_answer = Column(String(120), nullable=False,)
+    year = Column(String(120), nullable=False, unique=False)
+    incorrect_answers = Column(JSON, nullable=False )
+    explanation=  Column(String(500), nullable=False)
     course_quize = relationship("Courses", back_populates="quize")
 
     def __init__(self, *args, **kwargs):

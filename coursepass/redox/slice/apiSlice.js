@@ -214,7 +214,20 @@ export const api = createApi({
         body: {userID, courseID,assignmentID }, 
       }),
     }),
-
+    //quizes
+    getQuizeMetaData: builder.query({
+      query: () => `/quiz/filter/`,
+    }),
+    getQuizeFilter: builder.query({
+      query: ({course, uni, year}) => `course/${course}/quizes/${year}/${uni}`,
+    }),
+     score: builder.mutation({
+      query: ({userID, courseID, score }) => ({
+        url: '/score',
+        method: 'POST',
+        body: {userID, courseID,score }, 
+      }),
+    }),
 
   }),
 });
@@ -228,5 +241,8 @@ export const {
   useGetAssignmentAllocQuery,
   useCreateAssignmentMutation,
   useLazyGetAssignmentQuery,
-  useAllocateMutation
+  useAllocateMutation,
+  useGetQuizeMetaDataQuery,
+  useGetQuizeFilterQuery,
+  useScoreMutation
 } = api;

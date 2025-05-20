@@ -82,7 +82,10 @@ export default function CourseList() {
     <ScrollView className="px-4 mt-5 " 
     
      > 
-      <View className="flex flex-wrap   flex-row justify-between">
+
+      <View className="flex flex-wrap flex-row justify-between "
+      
+      >
         
     
         {data.map((course) => (
@@ -92,7 +95,7 @@ export default function CourseList() {
               className="w-full h-full rounded-lg overflow-hidden"
               resizeMode="cover"
             >
-              <View className="flex-1 p-2 bg-accent/10 rounded-lg">
+              <View className="flex-1 p-2 bg-accent/10 rounded-lg shadow-md ">
               <TouchableOpacity  onPress={()=>handleDel(course.id)}
               >
               <FontAwesome name="close" size={24} color="red" />

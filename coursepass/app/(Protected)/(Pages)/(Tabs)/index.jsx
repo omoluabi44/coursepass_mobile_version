@@ -28,7 +28,7 @@ export default function Home() {
   
  
   return (
-    <SafeAreaView className='bg-base' >
+    <SafeAreaView className=" bg-white" >
        <Header/>
       
           <View className=' h-full bg-base'>
