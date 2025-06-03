@@ -21,13 +21,16 @@ class User(BaseModel, Base):
     universityID = Column(String(60), ForeignKey("university.id"), nullable=True)
     whatsap_num =  Column(String(20), nullable=True)
     role = Column(String(60), nullable=True)
+    profile_image = Column(String(128), nullable=True)
   
 
     
     university = relationship("University", back_populates="student")
-    courses = relationship("Courses", secondary="enrollments", back_populates="students")
+    courses = relationship("Courses", secondary="enrollments", overlaps="enrollment", back_populates="students")
     allocation = relationship("Allocation", back_populates="students",  cascade="all, delete-orphan")
-    enrollment = relationship("Enrollment", cascade="all, delete-orphan", back_populates="user")
+    enrollment = relationship("Enrollment", cascade="all, delete-orphan",overlaps="courses", back_populates="user")
+    streak = relationship("Streak", cascade="all, delete-orphan", back_populates="user")
+    note_view = relationship("NoteView", cascade="all, delete-orphan", back_populates="user")
 
 
     def __init__(self, *args, **kwargs):

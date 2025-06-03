@@ -16,6 +16,8 @@ class Note(BaseModel, Base):
     session = Column(String(60), nullable=False,)
     orderID = Column(Integer, nullable=False, )
     outlines = relationship("Outline", back_populates="note")
+    
+    # note_view = relationship("NoteView", back_populates="note",  cascade="all, delete-orphan")
    
 
 

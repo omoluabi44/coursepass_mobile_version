@@ -1,6 +1,6 @@
 import { 
   View, Text, SafeAreaView, StyleSheet, ScrollView, TextInput, 
-  TouchableWithoutFeedback, Keyboard, Pressable 
+  TouchableWithoutFeedback, Keyboard, Pressable, TouchableOpacity
 } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -11,6 +11,9 @@ import {
 import GoBackBtn from '../../../../components/goBackButton'
 import { Dropdown } from 'react-native-element-dropdown'
 import PopUp from '../../../../components/toast'
+import {useNavigation} from '@react-navigation/native';
+import {MaterialCommunityIcons, AntDesign} from '@expo/vector-icons/';
+import { useColorScheme } from 'react-native';
 
 export default function AssignmentDetails() {
   const { user } = useSelector((state) => state.login)
@@ -19,12 +22,13 @@ export default function AssignmentDetails() {
   const { data: courseData } = useGetUserEnrollQuery(user.id)
   const [createAssignment, { isSuccess: enrollSuccess, isError: enrollError, error: enrollErrorData }] = useCreateAssignmentMutation()
   const [allocate, { isSuccess: allocateSuccess, isError: allocateError, error: allocateErrorData }] = useAllocateMutation()
-
+ const navigation = useNavigation()
   const [title, setTitle] = useState('')
   const [details, setDetails] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [value, setValue] = useState(null)
   const [courseID, setCourseID] = useState(null)
+  const theme = useColorScheme();
 
   useEffect(() => {
     if (enrollSuccess) {
@@ -95,9 +99,12 @@ export default function AssignmentDetails() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={theme ==="dark" ? styles.darkSafeArea : styles.safeArea}>
       <View style={styles.container}>
-        <GoBackBtn />
+        {/* <GoBackBtn /> */}
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <AntDesign name="left" size={24}  color={ theme ==="dark"? "white":"dark"} />
+                  </TouchableOpacity>
         {data?.role === 'HOC' ? (
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
@@ -192,10 +199,102 @@ export default function AssignmentDetails() {
             </ScrollView>
           </TouchableWithoutFeedback>
         ) : (
-          <View style={styles.centered}>
-            <GoBackBtn />
-            <Text style={styles.error}>You cannot upload since you are not a Class rep.</Text>
-          </View>
+          // <View style={styles.centered}>
+          
+          //   <Text style={styles.error}>You cannot upload since you are not a Class rep.</Text>
+          // </View>
+           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+              <Text style={styles.heading}>Create Assignment</Text>
+              <View style={styles.card}>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={data3}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select course"
+                  searchPlaceholder="Search..."
+                  value={value}
+                  onChange={item => setValue(item.value)}
+                />
+                <Text style={styles.label}>Title</Text>
+                <TextInput
+                  multiline
+                  style={styles.input}
+                  onChangeText={setTitle}
+                  value={title}
+                  placeholder="Briefly describe the assignment"
+                  placeholderTextColor="#666"
+                />
+                <Text style={styles.label}>Details</Text>
+                <TextInput
+                  multiline
+                  style={[styles.input, { height: 100 }]}
+                  onChangeText={setDetails}
+                  value={details}
+                  placeholder="Enter the assignment details"
+                  placeholderTextColor="#666"
+                />
+                <Text style={styles.label}>Due Date (YYYY-MM-DD)</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setDueDate}
+                  value={dueDate}
+                  placeholder="e.g. 2025-06-30"
+                  placeholderTextColor="#666"
+                />
+                <Pressable style={styles.button} onPress={handleCreateAssignment} android_ripple={{ color: '#fff' }}>
+                  <Text style={styles.buttonText}>Create Assignment</Text>
+                </Pressable>
+              </View>
+
+              <Text style={[styles.heading, { marginTop: 5 }]}>Assign Assignment</Text>
+              <View style={styles.card}>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={data3}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select course"
+                  searchPlaceholder="Search..."
+                  value={courseID}
+                  onChange={item => {
+                    setCourseID(item.value)
+                    handleGetAssignment(item.value)
+                  }}
+                />
+
+                {getSuccess && assignmentData && (
+                  <View style={{ marginTop: 15 }}>
+                    {assignmentData.map((assignment, id) => (
+                      <View key={id} style={styles.assignmentRow}>
+                        <Text style={styles.assignmentTitle}>{assignment.title}</Text>
+                        <Pressable
+                          style={styles.assignButton}
+                          onPress={() => handleAssign(assignment.id)}
+                          android_ripple={{ color: '#eee' }}
+                        >
+                          <Text style={styles.assignButtonText}>Assign</Text>
+                        </Pressable>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </ScrollView>
+          </TouchableWithoutFeedback>
         )}
       </View>
     </SafeAreaView>
@@ -206,6 +305,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#f5f7fa',
+  },
+   darkSafeArea: {
+    flex: 1,
+    backgroundColor: '#252231',
   },
   container: {
     flex: 1,

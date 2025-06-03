@@ -4,6 +4,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
 import { useRoute, useTheme } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import PopUp from '../components/toast';
+import {StatusBar} from 'expo-status-bar';
 
 
 
@@ -19,7 +21,13 @@ const data = [
 const DropdownComponent = () => {
   const route = useRoute();  
   const { username , id} = route.params; 
+
+
+  
+
   const userId = id
+
+  
   const [isFocus, setIsFocus] = useState(false);
   const [universitiesData, setUnversitiesData] = useState([])
   const [collegeData, setCollegeData] = useState([])
@@ -29,6 +37,7 @@ const DropdownComponent = () => {
   const [department, setDepartment] = useState('')
   const [level, setLevel] = useState()
   const navigation = useNavigation();
+console.log(college,department,university  );
 
     useEffect(()=>{
         const fetchUniversity = async ()=>{
@@ -41,7 +50,8 @@ const DropdownComponent = () => {
                  const universities = response.data
                  const uniArray = universities.map((uni) => ({
                     label: uni.university,
-                    value: uni.id,
+                    value: uni.university,
+                    value2: uni.id
                   }));
                   setUnversitiesData(uniArray)
              
@@ -50,12 +60,15 @@ const DropdownComponent = () => {
                   
                 } else if (response.status === 404) {
                   console.log(response.data.message);
+                  PopUp({type: "error", title: "Error", message:"error"});
                   
                 }else {
                     console.log (response);
+                     PopUp({type: "error", title: "Error", message:"error"});
                 }
               } catch (err) {
                 console.log("error", err);
+                 PopUp({type: "error", title: "Error", message:"error"});
               }
     
 
@@ -72,7 +85,8 @@ const DropdownComponent = () => {
              const colleges = response.data
              const collegeArray = colleges.map((col) => ({
                 label: col.college,
-                value: col.id,
+                value: col.college,
+                value2: col.id
               }));
               console.log(collegeArray);
               
@@ -101,7 +115,8 @@ const DropdownComponent = () => {
              const department = response.data
              const departmentArray = department.map((dept) => ({
                 label: dept.department,
-                value: dept.id,
+                value: dept.department,
+            
               }));
               setDepartmentData(departmentArray)
          
@@ -129,23 +144,31 @@ const DropdownComponent = () => {
         
       });
       if (response.status === 201) {
-        console.log('registration successfull !!!', response.data );
-        navigation.navigate('login');
+   
+        PopUp({type: "success", title: "Successful", message:"Registration successfull"});
+        navigation.navigate('profilePic');
         
         
-      } else {  console.log (response.data.message);
+      } else {  
+        // console.log (response.data.message);
+        PopUp({type: "error", title: "Error", message:"error"});
        
       }
     } catch (err) {
           console.log(err);
+          PopUp({type: "error", title: "Error", message:"error"});
     }
   }
 
-     console.log(username,userId);
-     
+const handleSkip =()=>{
+  navigation.navigate('profilePic');
+ 
+}
+
 
   return (
-    <View className="h-full mt-20 " >   
+    <View className="h-full mt-20 " > 
+    <StatusBar style='dark' />  
      <View className="items-center   "> 
             <Text className="text-2xl text-accent">
                Finish Up your Registration {username} 
@@ -175,8 +198,8 @@ const DropdownComponent = () => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-        setUniversity(item.label);
-          handleCollege(item.value)
+        setUniversity(item.value);
+          handleCollege(item.value2)
           setIsFocus(false);
         }}
    
@@ -198,8 +221,8 @@ const DropdownComponent = () => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-            setCollege(item.label);
-          handleDepartment(item.value)
+            setCollege(item.value);
+          handleDepartment(item.value2)
           setIsFocus(false);
         }}
    
@@ -221,7 +244,7 @@ const DropdownComponent = () => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-        setDepartment(item.label);
+        setDepartment(item.value);
           setIsFocus(false);
         }}
         
@@ -250,9 +273,17 @@ const DropdownComponent = () => {
        
       />
        </View>
-       <View className="flex-row item-center justify-center">
+       <View className=" flex-row item-center justify-around mx-5 ">
+      
+       
+            <TouchableOpacity  onPress={handleSkip}
+            className='bg-base  p-3 rounded-2xl mb-3 mt-3 w-40 justify-center border border-accent flex-row item-center'   >
+                <Text className='text-xl font-bold text-accent text-center '>
+                       Skip
+                </Text>
+            </TouchableOpacity>
             <TouchableOpacity  onPress={()=>handleRegister(userId)}
-            className='bg-accent  p-3 rounded-2xl mb-3 mt-3 w-60 justify-center flex-row item-center'   >
+            className='bg-accent  p-3 rounded-2xl mb-3 mt-3 w-40 justify-center flex-row item-center'   >
                 <Text className='text-xl font-bold text-base text-center '>
                        Register
                 </Text>

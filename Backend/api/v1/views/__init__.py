@@ -21,3 +21,4 @@ from api.v1.views.auth import *
 from api.v1.views.universities import *
 from api.v1.views.college import *
 from api.v1.views.department import *
+from api.v1.views.streak import *

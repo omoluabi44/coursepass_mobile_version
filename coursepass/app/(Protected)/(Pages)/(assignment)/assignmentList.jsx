@@ -1,35 +1,65 @@
-import {View, Text, SafeAreaView, ScrollView, Pressable} from 'react-native'
-import {MaterialCommunityIcons} from '@expo/vector-icons/';
+import {View, Text, SafeAreaView, ScrollView, Pressable, TouchableOpacity, StatusBar} from 'react-native'
+
 import React, {useState} from 'react'
 import GoBackBtn from '../../../../components/goBackButton';
 import {useGetAssignmentAllocQuery} from '../../../../redox/slice/apiSlice';
 import {useSelector} from 'react-redux';
+import {MaterialCommunityIcons, AntDesign} from '@expo/vector-icons/';
+import {useColorScheme} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import Error from '../../../../components/error';
+import LoadingComponent from '../../../../components/HomeComponents/loading';
 
 export default function Assignments() {
   const {user} = useSelector((state) => state.login);
   const {data, isFetching, isSuccess, error, isError, refetch} = useGetAssignmentAllocQuery(user.id)
   const [open, setOpen] = useState(false)
   const [topic, setTopic] = useState("")
-  if (isFetching) return (<Text>loading</Text>)
+  const theme = useColorScheme();
+  const navigation = useNavigation()
+
+   if(isFetching){
+     return(
+     <LoadingComponent component="ASSIGNMENT"/>
+     )
+   }
+
+  if (!isSuccess) return (
+ 
+    <Error component="ASSIGNMENT"/>
+  );
   if (isError) {
     if (error.status === 404)
       return (
-        <View className="mt-10">
+        <SafeAreaView
+          style={theme === 'dark' ? {backgroundColor: "#252231"} : ""}
 
-          <GoBackBtn />
-          <View className="h-full justify-center items-center" >
 
-            <Text className="">you have not been assigned any assignment</Text>
-            <Text>check back later</Text>
+        >
+          <View className="h-full mt-10">
+
+
+            <View className="absolute top-10">
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <AntDesign name="left" size={24} color={theme === "dark" ? "white" : "dark"} />
+              </TouchableOpacity>
+            </View>
+            <View className="h-full justify-center items-center" >
+
+              <Text className=" text-center mx-5"
+                style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
+              >you have not been assigned any assignment check back later</Text>
+
+            </View>
           </View>
-        </View>
+        </SafeAreaView>
       )
     else {
       return (<Text>error</Text>)
     }
   }
 
-  console.log(data);
+
 
   const handleAssignmentDetails = (title) => {
     console.log(title);
@@ -39,7 +69,11 @@ export default function Assignments() {
 
   return (
 
-    <SafeAreaView >
+    <SafeAreaView
+      className="bg-base"
+      style={theme === 'dark' ? {backgroundColor: "black"} : ""}
+    >
+      <StatusBar barStyle={theme === "dark" ? "light-content" : "dark-content"} />
       {open ?
         <View className="h-full items-center justify-center px-6">
           <Text className="text-xl font-semibold mb-8 text-center">{topic}</Text>
@@ -59,82 +93,21 @@ export default function Assignments() {
           </View>
         </View>
         :
-        // <View className="h-full bg-secondary2 ">
-        //   <View className="mx-3">
-        //     <GoBackBtn />
-        //   </View>
-        //   <View className="mx-5 mt-5">
-        //     <Text className="text-2xl font-bold"> ASSIGNMENTS </Text>
-        //   </View>
-        //   <ScrollView>
 
+        <View className="h-full bg-base"
+          style={theme === 'dark' ? {backgroundColor: "black"} : ""}
 
-        //     {Object.entries(data).map(([courseID, assignments] ) => (
-        //       <View key={courseID} >
-        //         <View className="mx-5 my-2 bg-base px-3 py-3 rounded-lg  ">
-        //           <View className="mb-3 flex-row justify-between">
-        //             <Text className="text-accent text-[12px]">
-        //               {courseID}
-        //             </Text>
-        //             <View className="bg-bgr h-[20] justify-center rounded-2xl px-2" >
-        //               <Text className="text-xs text-accent"> {assignments.length} assignments </Text>
-        //             </View>
-
-        //           </View>
-
-        //           <ScrollView vertical showsHorizontalScrollIndicator={false} className="">
-        //             {assignments.map((assignment, id) => (
-        //               <View key={id}className="flex-row gap-3 my-2">
-
-
-        //                 <View className=" h-full  border-[0.3px] w-full px-2 py-2 rounded">
-        //                   <Pressable onPress={() => handleAssignmentDetials(assignment.title)}>
-        //                     <View className=" mb-5">
-        //                       <View>
-        //                         <Text>
-        //                           {assignment.title}
-
-        //                         </Text>
-        //                       </View>
-
-        //                     </View>
-        //                     <View className=" flex-row  justify-between ">
-        //                       <Text>{assignment.due_date}</Text>
-        //                       {/* <View className="bg-[#fcecc5] h-[20]  rounded-2xl px-2 ">
-        //                 <Text className="text-[#ffbc1f]">Pending</Text>
-        //               </View> */}
-
-
-        //                     </View>
-        //                   </Pressable>
-        //                 </View>
-
-
-
-        //               </View>
-
-        //             ))}
-
-        //           </ScrollView>
-        //         </View>
-
-
-
-        //       </View>
-        //     ))}
-        //   </ScrollView>
-
-
-
-
-        // </View>
-
-        <View className="h-full bg-gray-50">
-          <View className="mx-3 mt-4">
-            <GoBackBtn />
+        >
+          <View className="absolute top-10">
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign name="left" size={24} color={theme === "dark" ? "white" : "dark"} />
+            </TouchableOpacity>
           </View>
-          <View className="mx-5 mt-5">
-            <Text className="text-2xl font-bold text-gray-900">ASSIGNMENTS</Text>
+          <View className="items-center mt-10">
+            <Text className="text-black font-bold text-3xl "
+              style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
+
+            > Assignment</Text>
           </View>
           <ScrollView className="mt-4 px-2">
             {Object.entries(data).map(([courseID, assignments]) => (
@@ -146,12 +119,19 @@ export default function Assignments() {
                     shadowRadius: 10,
                     shadowOffset: {width: 0, height: 5},
                     elevation: 6,
+                    backgroundColor: theme === "dark" ? "#252231" : ""
                   }}
                 >
                   <View className="flex-row justify-between mb-3 items-center">
                     <Text className="text-sm text-blue-600 font-semibold">{courseID}</Text>
-                    <View className="bg-gray-200 rounded-2xl px-3 py-1">
-                      <Text className="text-xs text-blue-600">{assignments.length} assignments</Text>
+                    <View className="bg-gray-200 rounded-2xl px-3 py-1"
+                      style={theme === 'dark' ? {backgroundColor: "black"} : ""}
+
+                    >
+                      <Text className="text-xs text-blue-600"
+                        style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
+
+                      >{assignments.length} assignments</Text>
                     </View>
                   </View>
 
@@ -167,7 +147,9 @@ export default function Assignments() {
                         <View className="flex-1 border border-gray-300 rounded px-3 py-2">
                           <Pressable onPress={() => handleAssignmentDetails(assignment.title)}>
                             <View className="mb-4">
-                              <Text className="text-base text-gray-800">{assignment.title}</Text>
+                              <Text className="text-base text-gray-800"
+                                style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
+                              >{assignment.title}</Text>
                             </View>
                             <View className="flex-row justify-between">
                               <Text className="text-sm text-gray-600">Due: {assignment.due_date}</Text>

@@ -15,7 +15,7 @@ class Enrollment(BaseModel, Base):
     
     scores = relationship("Score", back_populates="enrollment",  cascade="all, delete-orphan")
     # flashcard = relationship("Flashcard", back_populates="enrollment",  cascade="all, delete-orphan")
-    user = relationship("User", back_populates="enrollment")
+    user = relationship("User", back_populates="enrollment", overlaps="courses,students")
 
 
 

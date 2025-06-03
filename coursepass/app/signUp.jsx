@@ -5,6 +5,7 @@ import Input from '../components/input';
 import axios from 'axios';
 import Loading from '../components/loader';
 import { useNavigation } from '@react-navigation/native';
+import PopUp from '../components/toast';
 
 
 
@@ -67,6 +68,7 @@ if(!inputs.username){
   valid = false 
 }
 if (valid){
+  print("execute")
 
     try {
       setVisible(true)
@@ -93,7 +95,8 @@ if (valid){
       }
     } catch (err) {
       setVisible(false)
-      console.log(err);
+    PopUp({type: "error", title: "Error", message: `${err.response.data.error}`});
+    
     }
   
   
@@ -127,6 +130,7 @@ if (valid){
       
 
       <ScrollView 
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20,  }}>
           <Input onChangeText={text =>  handleOnChange(text, "Fname") } error={errors.Fname} onFocus={()=>{ handleError(null, "Fname")}} placeholder="enter your first name " label="First Name"/>
           <Input onChangeText={text =>  handleOnChange(text, "Lname") } error={errors.Lname} onFocus={()=>{ handleError(null, "Lname")}}   placeholder="enter your Last name " label="Last Name"/>
@@ -141,7 +145,7 @@ if (valid){
 
           <View className='flex-row justify-center p-3 '>      
             <Text>Already had an account?</Text>
-            <TouchableOpacity  >
+            <TouchableOpacity onPress={()=> navigation.navigate("login")} >
            
                 <Text className='text-accent font-bold'> Login</Text>
             </TouchableOpacity>

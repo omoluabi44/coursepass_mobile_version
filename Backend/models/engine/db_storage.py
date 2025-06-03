@@ -19,6 +19,8 @@ from models.college import College
 from models.assignment import Assignment
 from models.allocation import Allocation
 from models.flashcard import  Flashcard
+from models.streak import  Streak
+from models.note_view import  NoteView
 from models.department import Department
 from os import getenv
 import sqlalchemy
@@ -30,7 +32,9 @@ classes = {
             "Note":Note, "User": User,"University":University,"Courses": Courses,
              "Outline": Outline, "Quize":Quize, "Enrollment"
             :Enrollment, "Score":Score, "Assignment":Assignment, "Allocation":Allocation,
-            "Flashcard":Flashcard, "Universities":Universities, "College":College, "Department":Department
+            "Flashcard":Flashcard, "Universities":Universities, "College":College, "Department":Department,
+            "NoteView":NoteView,
+            "Streak": Streak
     }
 
 
@@ -107,6 +111,15 @@ class DBStorage:
             return None
         """this way more faster than using the one above and below, gonna change it soon"""
         return self.__session.query(cls).filter_by(username=username).first()
+    def get_email(self, cls, email):
+        """
+        Returns the object based on the class name and its email, or
+        None if not found
+        """
+        if cls not in classes.values():
+            return None
+    
+        return self.__session.query(cls).filter_by(email=email).first()
     def get_id(self, cls, id):
         """
         Returns the object based on the class name and its ID, or
@@ -126,7 +139,7 @@ class DBStorage:
         if cls not in classes.values():
             return None
 
-        return self.__session.query(cls).filter_by(userID=id).first()
+        return self.__session.query(cls).filter_by(userID=id, courseID=course_id).first()
 
         return None
 

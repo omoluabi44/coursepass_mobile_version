@@ -1,13 +1,14 @@
 import axios from 'axios';
-import React, { useState, useRef } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
-import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useRef} from 'react';
+import {View, TextInput, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {router} from 'expo-router';
+import {useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import PopUp from '../components/toast';
 
 const OTPInput = () => {
-    const route = useRoute();  
-  const { username , email} = route.params; 
+  const route = useRoute();
+  const {username, email} = route.params;
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState(''); // State for error message
   const inputs = useRef([]);
@@ -17,7 +18,7 @@ const OTPInput = () => {
 
 
 
-  
+
 
   const handleChange = (text, index) => {
     if (text.length > 1) {
@@ -65,32 +66,39 @@ const OTPInput = () => {
       return;
     }
 
-  
+
     try {
 
       const response = await axios.post("http://172.20.10.5:5000/api/v1/auth/verify", {
-        code: otpString, 
-        email:email,
-         username:username 
-        });
+        code: otpString,
+        email: email,
+        username: username
+      });
       if (response.status === 200) {
-        console.log('OTP verified successfully:', otpString);
+        PopUp({type: "success", title: "Success", message: "Verification successful!"});
+
         setId(response.data.id)
         setUsername(response.data.username)
-    
-        
-        navigation.navigate('universityReg', { username: response.data.username, id:response.data.id });
-        
-      } else if (response.status === 404) {
-        console.log(response.data.message);
-        
+        setError(''); // Clear error on back
+        setOtp(['', '', '', '', '', '']);
+
+
+        navigation.navigate('universityReg', {username: response.data.username, id: response.data.id});
+
       }
     } catch (err) {
-      console.log("error", err);
+
+      setError(err.response.data.error);
     }
   };
 
-
+  const handleBack = () => {
+    router.back();
+    setError(''); // Clear error on back
+    setOtp(['', '', '', '', '', '']);
+    inputs.current[0].focus();
+    navigation.navigate('signUp')
+  }
 
   return (
     <View>
@@ -107,7 +115,7 @@ const OTPInput = () => {
           <TextInput
             key={index}
             ref={(el) => (inputs.current[index] = el)}
-            style={[styles.input, error ? styles.inputError : null]} 
+            style={[styles.input, error ? styles.inputError : null]}
             keyboardType="number-pad"
             maxLength={6}
             value={digit}
@@ -116,13 +124,20 @@ const OTPInput = () => {
           />
         ))}
       </View>
-      <View className="flex-row justify-center mt-5 w-full">
+      <View className="flex-row justify-around mt-5 w-full">
         <TouchableOpacity
           className="bg-base border border-accent p-4 rounded-2xl mb-3"
+          onPress={handleBack}
+        >
+          <Text className="text-xl font-bold text-accent text-center">Go Back</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="bg-accent border border-accent p-4 rounded-2xl mb-3"
           onPress={handleSubmit}
         >
-          <Text className="text-xl font-bold text-accent text-center">Confirm</Text>
+          <Text className="text-xl font-bold text-base text-center">Confirm</Text>
         </TouchableOpacity>
+
       </View>
     </View>
   );

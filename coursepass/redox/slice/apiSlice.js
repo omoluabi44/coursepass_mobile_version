@@ -7,12 +7,12 @@
 //     prepareHeaders: (headers, { getState }) => {
 //       const token = getState().login.token.access
 //       console.log("this is from prepareHeadres",token);
-      
-  
+
+
 //       if (token) {
 //         headers.set('authorization', `Bearer ${token}`)
 //       }
-  
+
 //       return headers
 //     }
 //   }),
@@ -34,19 +34,20 @@
 // export const { useGetUserQuery, useGetUserIdQuery, useGetUserRefreshQuery} = api
 
 
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import AsyncStorage  from '@react-native-async-storage/async-storage';
-import { updateAccessToken , logout} from '../actions/loginActionCreator';
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {updateAccessToken, logout} from '../actions/loginActionCreator';
+import {ScrollViewBase} from 'react-native';
 
 
 
 // Base query with token injection
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://172.20.10.5:5000/api/v1/',
-  prepareHeaders: (headers, { getState }) => {
+  prepareHeaders: (headers, {getState}) => {
     const accessToken = getState().login.token.access;
 
-    
+
     if (accessToken) {
       headers.set('Authorization', `Bearer ${accessToken}`);
       headers.set('Content-Type', 'application/json'); // Add this line
@@ -66,69 +67,69 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
     if (!refreshToken) {
       console.log('No refresh token available');
-  
+
       return result;
     }
 
     const refreshResult = await baseQuery(
       {
         url: 'auth/refresh',
-        method: 'POST', 
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json', 
+          'Accept': 'application/json',
         },
-        body: { refresh: refreshToken }, 
+        body: {refresh: refreshToken},
       },
       api,
       extraOptions
     );
-    
+
     console.log('Refresh request details:', {
       url: 'auth/refresh',
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: { refresh: refreshToken },
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: {refresh: refreshToken},
     });
- 
+
 
     console.log("this is refresh: ", refreshResult);
-    
+
     if (refreshResult?.data?.access) {
       access = refreshResult.data.access
-      
-      api.dispatch(updateAccessToken(access)); 
-     
+
+      api.dispatch(updateAccessToken(access));
+
       const updateAccess = async (access) => {
         try {
           const tokenString = await AsyncStorage.getItem('token');
-     
-          
+
+
           if (tokenString !== null) {
             const token = JSON.parse(tokenString);
             token.access = access;
 
-      
-             
+
+
             await AsyncStorage.setItem('token', JSON.stringify(token));
             console.log("this triggered");
           }
         } catch (error) {
           console.error('Error updating access token:', error);
-         
+
         }
       };
       await updateAccess(access)
-    
-     
-    
-  
-      
+
+
+
+
+
       // Retry the original request with the new access token
       result = await baseQuery(args, api, extraOptions);
     } else {
       console.log('Token refresh expired');
-      api.dispatch(logout()); 
+      api.dispatch(logout());
     }
 
   }
@@ -151,22 +152,21 @@ export const api = createApi({
       query: (id) => `enrollment/user/${id}`,
     }),
     enrollUser: builder.mutation({
-      query: ({ userID, courseID }) => ({
+      query: ({userID, courseID}) => ({
         url: '/enrollment',
         method: 'POST',
-        body: { userID, courseID }, 
+        body: {userID, courseID},
       }),
     }),
     deEnrollUser: builder.mutation({
-      query: ({  enrollID }) => ({
-        
+      query: ({enrollID}) => ({
+
         url: `/enrollment/${enrollID}`,
         method: 'DELETE',
-      
+
       }),
-     
     }),
-    
+
     getCourse: builder.query({
       query: (id) => `/course/${id}/outlines`,
     }),
@@ -176,42 +176,50 @@ export const api = createApi({
     getNote: builder.query({
       query: (id) => `/outline/${id}/notes`,
     }),
-     getNoteSession: builder.query({
+    getNoteSession: builder.query({
       query: ({outline, selectedValue}) => `/note/${outline}/${selectedValue}`,
     }),
     //flashcards
-      getFlashcard: builder.query({
+    getFlashcard: builder.query({
       query: (id) => `/flashcards/${id}`,
     }),
-     getFlashcardOutline: builder.query({
+    getFlashcardOutline: builder.query({
       query: (id) => `/flashcard/${id}/outline`,
     }),
-      createFlashCard: builder.mutation({
-      query: ({ outlineID, courseID, question, answer, userID}) => ({
+    createFlashCard: builder.mutation({
+      query: ({outlineID, courseID, question, answer, userID}) => ({
         url: '/flashcard',
         method: 'POST',
-        body: { outlineID, courseID,question,answer,userID }, 
+        body: {outlineID, courseID, question, answer, userID},
       }),
+    }),
+      delFlashcard: builder.mutation({
+      query: ({flashcardID}) => ({
+
+        url: `/flashcard/${flashcardID}`,
+        method: 'DELETE',
+
+       }),
     }),
     //assignment
     getAssignmentAlloc: builder.query({
       query: (id) => `/allocation/${id}/user`,
     }),
-     createAssignment: builder.mutation({
-      query: ({ courseID, title, due_date, detail, }) => ({
+    createAssignment: builder.mutation({
+      query: ({courseID, title, due_date, detail, }) => ({
         url: '/assignment',
         method: 'POST',
-        body: {courseID,title,due_date,detail }, 
+        body: {courseID, title, due_date, detail},
       }),
     }),
     getAssignment: builder.query({
       query: (courseID) => `/assignment/${courseID}`,
     }),
-     allocate: builder.mutation({
-      query: ({userID, courseID, assignmentID }) => ({
+    allocate: builder.mutation({
+      query: ({userID, courseID, assignmentID}) => ({
         url: '/allocation',
         method: 'POST',
-        body: {userID, courseID,assignmentID }, 
+        body: {userID, courseID, assignmentID},
       }),
     }),
     //quizes
@@ -221,20 +229,44 @@ export const api = createApi({
     getQuizeFilter: builder.query({
       query: ({course, uni, year}) => `course/${course}/quizes/${year}/${uni}`,
     }),
-     score: builder.mutation({
-      query: ({userID, courseID, score }) => ({
+    score: builder.mutation({
+      query: ({userID, courseID, score}) => ({
         url: '/score',
         method: 'POST',
-        body: {userID, courseID,score }, 
+        body: {userID, courseID, score},
       }),
     }),
+
+    // Score
+    getScoreAVG: builder.query({
+      query: (userID) => `score/${userID}`,
+    }),
+    getCourseScoreAVG: builder.query({
+      query: ({userID, courseID}) => `score/${userID}/${courseID}`,
+    }),
+    getPoint: builder.query({
+      query: (userID) => `streak/${userID}`,
+    }),
+    point: builder.mutation({
+      query: ({userID, note_id}) => ({
+        url: '/point',
+        method: 'POST',
+        body: {userID, note_id},
+      }),
+    }),
+
+    //rank
+    getRank: builder.query({
+      query: (userID) => `rank/${userID}`,
+    }),
+
 
   }),
 });
 
-export const { 
-  useGetUserQuery, 
-  useGetUserIdQuery, 
+export const {
+  useGetUserQuery,
+  useGetUserIdQuery,
   useGetUserEnrollQuery, useGetCourseQuery, useGetAllCourseQuery, useEnrollUserMutation, useDeEnrollUserMutation, useGetNoteQuery, useGetNoteSessionQuery, useGetFlashcardQuery,
   useGetFlashcardOutlineQuery,
   useCreateFlashCardMutation,
@@ -244,5 +276,10 @@ export const {
   useAllocateMutation,
   useGetQuizeMetaDataQuery,
   useGetQuizeFilterQuery,
-  useScoreMutation
+  useScoreMutation,
+  useGetScoreAVGQuery,
+  useGetCourseScoreAVGQuery,
+  useGetPointQuery,
+  usePointMutation,
+  useGetRankQuery, useDelFlashcardMutation
 } = api;

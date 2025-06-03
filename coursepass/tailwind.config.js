@@ -3,6 +3,7 @@ module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./screens/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
+  darkMode: "class",
   theme: {
     extend: {
       colors:{
@@ -10,13 +11,14 @@ module.exports = {
         accent:"#007BFF",
         primary:"#F5F5DC",
         secondary:"#F0F8FF",
+        base2:"#F0F8FF",
         secondary2:"#f5f3f2",
         btn: "#9CA3AF",
         btnCorrect: "green",
         btnInCorrect:"red",
         // assignmet page color
         bgr:"#D0E7FF",
-        green:"#32d102",
+        Green:"#32d102",
         BgGreen:"#d8ffcc",
         Orange:"#ffbc1f",
         BgOrange:"#fcecc5",

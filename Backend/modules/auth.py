@@ -23,3 +23,11 @@ def send_verification_email(recipient,code):
     body= f"Your account verification code is: {code}"
     msg = Message(subject=subject, body=body, recipients=[recipient])
     mail.send(msg)
+    return 1
+def send_password_email(recipient,code):
+    from api.v1.app import mail
+    subject = "Change your CoursePass password"
+    body= f"code is: {code}"
+    msg = Message(subject=subject, body=body, recipients=[recipient])
+    mail.send(msg)
+    return 1

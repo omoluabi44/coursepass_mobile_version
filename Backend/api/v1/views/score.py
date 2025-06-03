@@ -3,6 +3,7 @@ from flask import jsonify, make_response, abort, request
 from models import storage
 from models.quize import Quize
 from models.score import Score
+from models.user import User
 from models.course import Courses
 from models.enrollment import Enrollment
 import os
@@ -10,27 +11,37 @@ from flask_jwt_extended import jwt_required
 from os.path import join, dirname
 from flasgger.utils import swag_from
 
+
 session = storage._DBStorage__session
 
 
 
 @app_views.route('/score/<user_id>/<course_id>', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/score/get_score.yml'))
-@jwt_required()
+# @jwt_required()
 def get_score(user_id,course_id):
     """
     get score by user id and course id
     """
     enroll_user = storage.get_enroll_id(Enrollment,user_id,course_id )
+   
+    print(enroll_user)
     if not enroll_user:
         abort(404)
     enroll_user_id = enroll_user.id
     course = session.query(Score).filter_by(enrollmentID=enroll_user_id).all()
+    #  session.query(Score, func.avg(score).label("average_score")).filter_by(enrollmentID=enroll_user_id).all()
     scores = []
+    scoresss = {}
+    count = 0
     for i in course:
         scores.append(i.score)
-    
-    score_course =[course_id, scores]
+        count += 1
+        scoresss[f"atmp {count}"] = {"score": i.score, "date": i.created_at}
+        
+     
+
+    score_course ={course_id:scoresss}
     
     
 
@@ -50,19 +61,35 @@ def get_all_score(user_id,):
 
     for i in course:
         enroll_id_course.append({"id": i.id, "courseID": i.courseID})
-    all_score = [] 
+    all_score = []
+    avg = []
     for j in enroll_id_course:
         enroll_user_id = j["id"]
         course_id = j["courseID"]
         course = session.query(Score).filter_by(enrollmentID=enroll_user_id).all()
+        if not course:
+            continue
         scores = []
+        sc = 0
         for i in course:
-            scores.append(i.score)
+            sc += i.score
+        # print(sc)
+        sc = sc / len(course)
+        print(len(course))
+        scores.append(sc)
+        avg.append(sc)
+        print(sc)   
         score_course =[course_id, scores]
         all_score.append(score_course)
+    if (len(avg) == 0):
+        return(abort(404,"not Found"))
+    avg_score  =(sum(avg)/len(avg))
+    all_score.append({"avg_score": avg_score})
  
 
     return(make_response(jsonify(all_score),200))
+
+    
 
 
 
@@ -90,6 +117,14 @@ def post_score():
     enroll_user_id = enroll_user.id
     
     data["enrollmentID"] = enroll_user_id
+    
+    #store score to user score 
+    user = storage.get_id(User, user_id)
+    # user.streak.point += data["score"]
+    for streak in user.streak:
+        streak.point += data["score"]
+        print(streak.to_dict())
+        streak.save()
 
     instance = Score(**data)
     instance.save()

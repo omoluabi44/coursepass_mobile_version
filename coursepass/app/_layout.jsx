@@ -60,7 +60,7 @@ const RootLayoutNav = () => {
    
     
 
-    <Stack  screenOptions={{headerShown: false}}>
+    <Stack   screenOptions={{headerShown: false}}>
      <Stack.Screen name="(Protected)" options={{headerShown: false}}/>
     </Stack>
      

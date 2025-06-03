@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, TextInput, Button, SafeAreaView} from 'react-native'
+import {View, Text, TouchableOpacity, TextInput, Button, SafeAreaView, StatusBar, Pressable} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import ResultPage from '../../../components/markSheet.jsx';
 import {useLocalSearchParams} from 'expo-router';
@@ -6,6 +6,11 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useCallback} from 'react';
 import {useGetQuizeFilterQuery} from '../../../redox/slice/apiSlice';
 import {useSelector} from 'react-redux';
+import PopUp from '../../../components/toast.jsx';
+import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
+import Toast from 'react-native-toast-message';
+import { useColorScheme } from 'react-native';
 
 
 
@@ -21,8 +26,11 @@ export default function Quiz() {
   const [allAnswers, setAllAnswers] = useState([]);
   const [result, setResult] = useState(false)
   const [isLength, setIsLength] = useState(false)
+  const [showError, setShowError] = useState(false)
   const {user} = useSelector((state) => state.login);
   const {data, isFetching, isSuccess, error, isError, refetch} = useGetQuizeFilterQuery({course, uni, year})
+  const navigation = useNavigation()
+  const theme = useColorScheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -65,9 +73,26 @@ export default function Quiz() {
     if (isSuccess && data) {
       handleQuestionBank();
     }
+     if (isError) {
+      console.log(error);
+      
+    Toast.show({
+               type: "error",
+               text1: "Not Found",
+               text2: `${error.data}`,
+             })
+    setShowError(true);
+   router.push("/PastQuestion")
+   
+ 
+    
+  }
+
+    
 
 
-  }, [isSuccess, data])
+  }, [isSuccess, data, isError, error]);
+
 
 
   // const [score, setScore]= useState(0)
@@ -128,22 +153,32 @@ export default function Quiz() {
 
   return (
 
-    <SafeAreaView className="bg-base">
-
+    <SafeAreaView className="bg-base"
+    style={ theme === 'dark' ? { backgroundColor: "black" } : "" }
+    >
+ 
+      <StatusBar barStyle={theme==="dark" ? "light-content":"dark-content"} />
       {result ? (
         <View>
           <ResultPage questions={questions} userID={user.id} courseID={course} />
         </View>
       ) : (
 
-        <View className="flex-column justify-center gap-20 items-center h-full bg-base">
+        <View className="flex-column justify-center gap-20 items-center h-full bg-base"
+        style={ theme === 'dark' ? { backgroundColor: "black" } : "" }
+        >
           <View>
-            {/* <Text> course : {courseID} Difficulty: {difficulty}, Total question:{ totalQuestions}</Text> */}
+          
           </View>
-          <View className=" bg-secondary h-[500] mx-5 rounded-lg  ">
+          <View className=" bg-secondary h-[500] mx-5 rounded-lg  "
+          style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+          >
 
             <View className="items-center mx-10 mt-5 mb-20">
-              <Text className="text-xl">{questions[questionId]?.questionText}</Text>
+              <Text className="text-xl"
+              style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+
+              >{questions[questionId]?.questionText}</Text>
 
             </View>
 
@@ -153,14 +188,16 @@ export default function Quiz() {
               {allAnswers.map((item, i) => {
                 return (
                   <View key={i} >
-                    <TouchableOpacity onPress={() => handleSelected(item)} >
-                      <View className={`h-10 bg-base items-center justify-center w-40 rounded " ${selected === item ? "border-2 border-accent bg-base" : ""}`}>
+                    <Pressable onPress={() => handleSelected(item)} >
+                      <View className={`h-10 bg-base items-center justify-center w-40 rounded " ${selected === item ? "border-2 border-accent bg-base" : ""}`}
+                       style={ theme === 'dark' ? { backgroundColor: "#d4d4d4" } : "" } 
+                      >
                         <Text className={selected === item ? "text-accent " : ""}>{item}</Text>
 
                       </View>
 
 
-                    </TouchableOpacity>
+                    </Pressable>
 
 
 

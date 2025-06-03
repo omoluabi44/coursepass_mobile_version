@@ -1,138 +1,154 @@
-import { View, Text,Image ,ScrollView, Touchable, TouchableOpacity, SafeAreaView} from 'react-native'
-import React from 'react'
+import {View, Text, Image, ScrollView, TouchableOpacity, Platform, SafeAreaView} from 'react-native';
+import React, {useEffect} from 'react';
 import GoBackBtn from '../../../components/goBackButton';
-import Title from '../../../components/titles';
-import {FontAwesome, AntDesign ,  MaterialIcons, FontAwesome5, FontAwesome6, Fontisto, EvilIcons  } from '@expo/vector-icons/';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../../redox/actions/loginActionCreator';
-import { useGetUserIdQuery } from '../../../redox/slice/apiSlice';
-import { useSelector } from 'react-redux';
+import {FontAwesome, AntDesign, MaterialIcons, FontAwesome5, FontAwesome6, Fontisto, EvilIcons} from '@expo/vector-icons';
+import {useDispatch} from 'react-redux';
+import {logout} from '../../../redox/actions/loginActionCreator';
+import {useGetUserIdQuery} from '../../../redox/slice/apiSlice';
+import {useSelector} from 'react-redux';
 
-
+import * as SystemUI from 'expo-system-ui';
+import {hideNavigationBar} from 'react-native-navigation-bar-color';
+import {router} from 'expo-router';
+import {useColorScheme} from 'react-native';
 
 
 
 export default function Profile() {
-  const dispatch = useDispatch()
+
+  const dispatch = useDispatch();
   const {user} = useSelector((state) => state.login);
-  const {data, isFetching, isSuccess, error ,isError} = useGetUserIdQuery(user.id)
+  const {data, isFetching, isError} = useGetUserIdQuery(user.id);
+  const theme = useColorScheme();
 
-  
 
-  if(isFetching) return <Text>Loading...</Text>
-  if(isError) return (<Text>error fetching your profile</Text>)
+
 
 
   const logOut = () => {
-    dispatch(logout())
-
-
-
-  }
+    dispatch(logout());
+  };
 
   return (
 
-      
-   <SafeAreaView>
+      <SafeAreaView className="h-full bg-[#f5f3f2]"
+style={ theme === 'dark' ? { backgroundColor: "black" } : "" }
 
-  
-    <View className="h-full bg-[#f5f3f2] ">
-      <View className="mt-5 mb-5 flex-row justify-around">
-              <GoBackBtn/>
-                <View className="items-center">
-                    <Text className="text-lg">
-                   Profile
-                    </Text>
-                </View>
-                <TouchableOpacity
-                onPress={logOut}
-                 className="w-20 bg-accent justify-center items-center rounded-2xl h-[30px]">
-                  <Text className="text-base">Log out</Text>
-                </TouchableOpacity>
-            </View>
-      
-  
-   <ScrollView>
-      <View className="mt-20 bg-base mx-5 rounded items-center ">
-       <Image 
-              className="w-40 h-40 rounded-full mt-5 "
-              source ={require('../../../assets/images/profile.jpg')}
-              
-              />
-              <View className="justify-center items-center gap-2 mt-3 mb-3">
-              <Text className="text-2xl font-bold">@{data.username}</Text>
-              <Text> {data.university.department} Student </Text>
+      >
+        <View className="px-5 pt-5">
+          <View className="flex-row justify-between items-center mb-5">
+            <TouchableOpacity onPress={() => router.push("./")}>
+              <AntDesign name="left" size={24} color={ theme ==="dark"? "white":"dark"} />
+            </TouchableOpacity>
+            <Text className="text-2xl font-bold"
+             style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+            >Profile</Text>
+            <TouchableOpacity
+              onPress={logOut}
+              className="bg-accent px-4 py-1 rounded-xl"
               
 
+            >
+              <Text className="text-white font-medium"
+               style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+              >Log out</Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{height: Platform.OS == "android" ? "650" : "100%", backgroundColor:  theme==="dark"? "black":'#f5f3f2'}}
+          >
+            <ScrollView showsVerticalScrollIndicator={false}
+
+            >
+              <View className="bg-white rounded-2xl  p-5 items-center"
+              style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+              
+              >
+
+                <Image
+                  className="w-36 h-36 rounded-full mb-3"
+
+                  source={data && data.profile_image ? {uri: data.profile_image} : require('../../../assets/images/profile.png')}
+                />
+
+
+                <Text className="text-2xl font-bold mb-1"
+                style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+
+                >@{data && data.username}</Text>
+                <Text className="text-sm text-gray-600 mb-3"
+                style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                >{data && data.university ? data.university.department : "Null"} Student</Text>
               </View>
-             
-      </View>
-      {/* Personal Infor */}
-      <View className="mx-5 mt-5 flex-row gap-4 justify-center ">
-        <View className="h-20 w-20 bg-base justify-center rounded">
-          <View className="items-center gap-4">
-            <Text className="text-accent text-lg">5th</Text>
-            <Text className="text-xs">Leaderboard</Text>
-          </View>
-        </View>
-        <View className="h-20 w-20 bg-base justify-center rounded">
-          <View className="items-center gap-4">
-            <Text className="text-accent text-lg">5 </Text>
-            <Text className="text-xs">Courses</Text>
-          </View>
-        </View>  
-        <View className="h-20 w-20 bg-base justify-center rounded">
-          <View className="items-center gap-4">
-            <Text className="text-accent text-lg">{data.university.level}</Text>
-            <Text className="text-xs">Level</Text>
-          </View>
-        </View>
-      </View>
-      <View className="mx-5 mt-5 ">
-        <Text className="font-bold">
-         PERSONAL INFORMATION
-        </Text>
-        <View  className=" gap-3  mt-5">
-          <View className="bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
-          <FontAwesome6 name="user" size={24} color="black" />
-          <Text className="text-sm"> {data.Fname +" "+ data.Lname} </Text>
-          </View>
-          <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
-          <Fontisto name="email" size={24} color="black" />
-          <Text className="text-xs"> {data.email} </Text>
-          </View>
-          <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
-          <EvilIcons name="sc-telegram" size={24} color="black" />
-          <Text className="text-sm"> {data.whatsap_num} </Text>
-          </View>
-        
-        </View>
-      </View>
-      <View className="mx-5 mt-5 ">
-        <Text className="font-bold">
-         SCHOOL INFORMATION
-        </Text>
-        <View  className=" gap-3  mt-5">
-          <View className="bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
-          <FontAwesome name="university" size={24} color="black" />
-          <Text className="text-xs"> {data.university.university} </Text>
-          </View>
-          <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
-          <MaterialIcons name="engineering" size={24} color="black" />
-          <Text className="text-xs">{data.university.College}</Text>
-          </View>
-          <View className=" bg-base pl-5 pt-2 pb-2 mr-5 flex-row gap-3 items-center">
-          <FontAwesome5 name="robot" size={24} color="black" />
-          <Text className="text-xs">{data.university.department}</Text>
-          </View>
-        
-        </View>
-      </View>
-      
-      </ScrollView>
 
-    </View>
-    </SafeAreaView>
-   
+              <View className="flex-row justify-around mt-6">
+                {[
+                  {label: 'Leaderboard', value: '5th'},
+                  {label: 'Courses', value: '5'},
+                  {label: 'Level', value: data && data.university ? data.university.level : "Null"},
+                ].map((item, index) => (
+                  <View key={index} className="bg-[#E6F0FF] w-24 h-24 rounded-2xl items-center justify-center ">
+                    <Text className="text-lg font-bold text-accent">{item.value}</Text>
+                    <Text className="text-xs mt-1 text-gray-600">{item.label}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View className="mt-3 ">
+                <Text className="text-lg font-bold mb-3"
+                style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                >Personal Information</Text>
+                <View className="rounded-xl bg-white p-4"
+                style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+                >
+                  {[
+                    {icon: <FontAwesome6 name="user" size={20}  color={ theme ==="dark"? "white":"dark"} />, value: `${data?.Fname} ${data?.Lname}`},
+                    {icon: <Fontisto name="email" size={20}  color={ theme ==="dark"? "white":"dark"} />, value: data?.email},
+                    {icon: <EvilIcons name="sc-telegram" size={24}  color={ theme ==="dark"? "white":"dark"} />, value: data?.whatsap_num},
+                  ].map((item, index) => (
+                    <View key={index} 
+                    className="bg-white  px-4 py-3 flex-row items-center gap-3 border-b border-gray-300 "
+                    style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+                    >
+                      {item.icon}
+                      <Text className="text-sm text-gray-700"
+                       style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                      >{item.value? item.value: "Null"}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              <View className="mt-3">
+                <Text className="text-lg font-bold mb-3"
+                style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                >School Information</Text>
+                <View className="rounded-xl bg-white p-4"
+                style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+                >
+                  {[
+                    {icon: <FontAwesome name="university" size={20} color={ theme ==="dark"? "white":"dark"} />, value: data && data.university ? data.university.university : "Null"},
+                    {icon: <MaterialIcons name="engineering" size={20} color={ theme ==="dark"? "white":"dark"}  />, value: data && data.university ? data.university.College : "Null"},
+                    {icon: <FontAwesome5 name="robot" size={20} color={ theme ==="dark"? "white":"dark"} />, value: data && data.university ? data.university.department : "Null"},
+                  ].map((item, index) => (
+                    <View key={index}
+                     className="bg-white rounded-xl px-4 py-3 flex-row items-center gap-3 border-b border-gray-300"
+                     style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+                     >
+                      {item.icon}
+                      <Text
+                        // style={{fontSize: 14}} 
+                        className=" test-sm text-gray-700 px-2"
+                         style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                        >{item.value ? item.value : "Null"}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </SafeAreaView>
+
   );
 }

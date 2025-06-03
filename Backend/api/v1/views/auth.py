@@ -16,13 +16,14 @@ from flask_mail import Mail, Message
 from os import environ
 from os.path import join, dirname
 from datetime import datetime, timedelta
-from modules.auth import generate_verification_code, send_verification_email
+from modules.auth import generate_verification_code, send_verification_email, send_password_email
 
-   
+session = storage._DBStorage__session
 @app_views.route('/auth/register', methods=["POST"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/user/register_user.yml'))
 
 def post_user():
+    print("i executed")
     """
         CREATE  a new user
     """
@@ -33,11 +34,47 @@ def post_user():
     for i in requiredField:
         if i not in data:
             abort(400, description=f"Missing {i}")
-   
+    
+    username = data.get("username")
+    email = data.get("email")
+    
     verification_code = str(random.randint(100000, 999999))
     expires_at = datetime.utcnow() + timedelta(hours=2)
+   
+   
+    db_email = session.query(User).filter(User.email == email).first()
+    db_username = session.query(User).filter(User.username == username).first() 
+    
+    if db_email and db_username and db_username.is_verified == False:
+        sent = send_verification_email(
+        recipient=data["email"],
+        code=verification_code)
+        if not sent:
+            return make_response(jsonify({"error": "Failed to send verification email"}), 500)
+        db_username.verification_code = verification_code
+        db_username.save()
+        return make_response(jsonify(db_username.to_dict()), 201)
+    
+    if db_email:
+        # print(db_email)
+        return make_response(jsonify({"error": "Email already exists"}), 400)
 
-    print(verification_code)
+   
+    if db_username:
+        print(db_username)
+        return make_response(jsonify({"error": "Username already exists"}), 400)
+    
+    
+  
+    
+    sent = send_verification_email(
+        recipient=data["email"],
+        code=verification_code
+    )
+    if not sent:
+        return make_response(jsonify({"error": "Failed to send verification email"}), 500)
+
+
     
     user_data ={
     "username": data["username"],
@@ -52,10 +89,7 @@ def post_user():
     instance = User(**user_data)
     instance.save()
 
-    send_verification_email(
-        recipient=data["email"],
-        code=verification_code
-    )
+   
     return make_response(jsonify(instance.to_dict()), 201)
 
 
@@ -98,7 +132,7 @@ def verify():
             abort(400, description=f"Missing {i}")
     username = data["username"]
     code = data["code"]
-    print("this is from user" , code)
+   
     
     user = storage.get_username(User, username)
     user_dict = user.to_dict()
@@ -143,7 +177,7 @@ def login_user():
         return make_response(jsonify({"error": f"User {username}  not found"}), 404)
 
     if not user.check_password(password):
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid Password"}), 401
     if not user.is_verified:
         return jsonify({"error": "account not verified"}), 403
     access_token = create_access_token(identity=user.id)
@@ -188,3 +222,62 @@ def refresh_token():
 
     except Exception as e:
         return make_response(jsonify({"msg": "Invalid or expired refresh token"}), 401)
+    
+    
+@app_views.route('/auth/change_password_request', methods=['POST'])
+def change_password_request():
+    # collect user email
+    # not found - user does not exist
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    if 'email' not in request.get_json():
+         abort(400, description="Missing email")
+    data = request.get_json()
+    email = data["email"]
+    user = storage.get_email(User, email)
+    if not user:
+        return make_response(jsonify({"error": "User not found"}), 404)
+    new_code = generate_verification_code(user)
+    print(new_code)
+    send_password_email(recipient=user.email, code=new_code)
+    return jsonify({
+        "message": "password verification code sent",
+        "expires_at": user.code_expires_at.isoformat() 
+    }), 200
+
+
+@app_views.route('/auth/reset_password', methods=['Post'], strict_slashes=False)
+# @swag_from(join(dirname(__file__), 'documentation/user/put_user.yml'), methods=['PUT'])
+# @jwt_required()
+def reset_password():
+    """
+    change user password
+    """
+   
+  
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    if 'email' not in request.get_json():
+         abort(400, description="Missing email")
+    if 'code' not in request.get_json():
+         abort(400, description="Missing code")
+    if 'password' not in request.get_json():
+         abort(400, description="Missing password")
+    data = request.get_json()
+    email = data["email"]
+    if not email:
+        abort(404)
+    code = data["code"]
+    user = storage.get_email(User, email)
+    if datetime.utcnow() > user.code_expires_at:
+        return make_response(jsonify({"error": "Verification code expired"}), 400)
+    if user.verification_code != code:
+         return make_response(jsonify({"error": "Invalid Verification code"}), 400)
+    
+    user.verification_code = None
+    password = "password"
+    for key, value in data.items():
+        if key == "password":
+            setattr(user, key, value)
+    storage.save()
+    return("successfull")

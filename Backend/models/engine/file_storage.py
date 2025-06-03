@@ -22,12 +22,15 @@ from models.flashcard import  Flashcard
 from models.college import College
 from models.department import Department
 from hashlib import md5
+from models.streak import  Streak
+from models.note_view import  NoteView
 
 classes = {
             "Note":Note,"User":User, "BaseModel": BaseModel,"University":University, 
             "Courses": Courses,  "Outline": Outline, 
             "Quize":Quize,"Enrollment":Enrollment, "Score":Score, "Assignment":Assignment, "Allocation":Allocation,
-            "Flashcard":Flashcard, "Universities":Universities, "College":College,"Department":Department
+            "Flashcard":Flashcard, "Universities":Universities, "College":College,"Department":Department, "NoteView":NoteView,
+            "Streak": Streak
           }
 
 

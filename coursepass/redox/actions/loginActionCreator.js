@@ -2,6 +2,7 @@ import {LOGIN_REQUEST, LOGIN_SUCCESS,LOGIN_FAILURE,LOGOUT, UPDATE_ACCESS_TOKEN }
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import PopUp from "../../components/toast"
 
 export function loginRequest() {
   return {
@@ -35,6 +36,7 @@ export function loginFailure(error) {
 export function logout() {
   AsyncStorage.removeItem('token')
   AsyncStorage.removeItem('user')
+
     return {
       type: LOGOUT
     };
@@ -61,7 +63,12 @@ export function logout() {
     })
     .catch((error) => {
       dispatch(loginFailure(error.message));
+      // PopUp({ type: "error", title: "Error", message:`${error.message}` });
+      
+      
       throw error;
+     
+      
       
     });
   }
@@ -77,7 +84,9 @@ const apiLogin = async (username, password) =>{
   catch(error ){
     console.log(error.status );
     console.log(error.response.data );
-    throw new Error (error.response?.data?.message ||  'Login failed'); }
+    const msg = error.response.data.error
+    PopUp({ type: "error", title: "Login Failed", message:`${msg}` });
+    throw new Error (error.response?.data?.message ||  'Logins failed'); }
   }
 
 export const initializeAuth = () => async (dispatch) => {

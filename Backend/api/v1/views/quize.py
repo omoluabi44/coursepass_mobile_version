@@ -12,9 +12,24 @@ session = storage._DBStorage__session
 
 @app_views.route('/course/<course_id>/quizes/<year>/<university_code>', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/quize/get_quiz.yml'))
+  
 # @jwt_required()
 def get_question(course_id, year, university_code):
+    """_summary_
+    Get all quizes for a specific course, year and university code.
+    Args:
+        course_id (_type_): string
+        year (_type_): string
+        university_code (_type_): string
+
+    Returns:
+        _type_: _description_
+        list of quizes  
+    """
     quizes = session.query(Quize).filter_by(courseID=course_id, year=year, university_code=university_code).all()
+    print(quizes)
+    if not quizes:
+         return make_response("No quizes found for this course, year and university code",404)
  
     
     quize_dict = [quize.to_dict() for quize in quizes]
@@ -22,7 +37,7 @@ def get_question(course_id, year, university_code):
 
 @app_views.route('/quiz/filter', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/quize/get_quiz.yml'))
-@jwt_required()
+# @jwt_required()
 def get_filter():
     """
     Return the current course, university and year for user selection
