@@ -19,7 +19,7 @@ session = storage._DBStorage__session
 
 @app_views.route('/allocation/<user_id>/user', methods=["GET"], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/allocation/all_allocation.yml'))
-# @jwt_required()
+@jwt_required()
 def get_allocation(user_id):
     """
     get all allocation  by user id
@@ -51,7 +51,7 @@ def get_allocation(user_id):
 
 @app_views.route('/allocation', methods=['POST'], strict_slashes=False)
 @swag_from(join(dirname(__file__), 'documentation/allocation/post__allocation.yml'))
-# @jwt_required()
+@jwt_required()
 def post_allocation():
     """
     Creates a allocation
