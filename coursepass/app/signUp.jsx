@@ -12,6 +12,8 @@ import PopUp from '../components/toast';
 export default function Login() {
   const [visible, setVisible] = useState(false)
    const navigation = useNavigation();
+   console.log("i execute");
+   
 
  const [inputs, setInput] = useState({
   email:"",
@@ -23,6 +25,8 @@ export default function Login() {
 
  })
  const {email,Fname,Lname,password, whatsap_num, username} =inputs
+ console.log(inputs);
+ 
 
  
  const [errors, setIsError] = useState({})
@@ -68,11 +72,11 @@ if(!inputs.username){
   valid = false 
 }
 if (valid){
-  print("execute")
+  console.log("execute")
 
     try {
       setVisible(true)
-      const response = await axios.post("http://172.20.10.5:5000/api/v1/auth/register", {
+      const response = await axios.post("https://api.coursepass.me/api/v1/auth/register", {
         email:email,
         Fname:Fname,
         Lname:Lname,
@@ -81,6 +85,8 @@ if (valid){
         username:username
       });
       if (response.status === 201) {
+        console.log(response.data);
+        
         setVisible(false)
      
         navigation.navigate('confirmEmail', { username: username, email:email });
@@ -95,7 +101,9 @@ if (valid){
       }
     } catch (err) {
       setVisible(false)
-    PopUp({type: "error", title: "Error", message: `${err.response.data.error}`});
+
+console.log(err);
+      PopUp({type: "error", title: "Error", message: `${err.response.data.error}`});
     
     }
   
@@ -115,11 +123,15 @@ if (valid){
   return (
     <View className='bg-white h-full w-full'>
         <Loading visible={visible} data="sending code..."/>
-        <StatusBar style='light'/>
-        <View className=' items-center mt-20 '>
-          <Text className='text-4xl text-accent'>COURSEPASS</Text>
-        </View>
-        <View className='items-center mt-20  '>
+        <StatusBar style='dark'/>
+         <View className=' items-center mt-20 '>
+                <Image
+                     style={{width:100,  height: 100, marginBottom: 20}}
+                        source={require('../assets/images/newLogo.png')}
+                      />
+                      <Text className="text-accent font-bold text-xl">CoursePass</Text>
+              </View>
+        <View className='items-center mt-10  '>
           <Text className='text-4xl text-accent font-bold'>REGISTER</Text>
         </View>
 

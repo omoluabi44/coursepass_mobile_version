@@ -32,7 +32,7 @@ export default function Header() {
         {/* Center: Greeting and Logo */}
         <View className="flex-1 flex-row items-center ml-4">
           <Image
-            source={require('../../assets/images/logo1.png')}
+            source={require('../../assets/images/newLogo.png')}
             className="rounded-full mr-2"
             style={{ width: 30, height: 30 }}
           />

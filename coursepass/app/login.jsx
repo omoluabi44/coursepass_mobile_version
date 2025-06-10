@@ -30,8 +30,9 @@ export default function Login() {
       });
       router.replace("/(Protected)/(Pages)");
     } catch (error) {
-      console.error("Login failed:", error);
-      console.log(error);
+      console.error("Login faileds:", error);
+      // PopUp({ type: "error", title: "Login Failedf", message:`${ error}` });
+   
 
 
 
@@ -42,7 +43,7 @@ export default function Login() {
   const handleChangepassword = async () => {
 
     try {
-      const response = await axios.post('http://172.20.10.5:5000/api/v1/auth/change_password_request', {email})
+      const response = await axios.post('https://api.coursepass.me/api/v1/auth/change_password_request', {email})
 
       console.log(response.data.message);
       setLoading(false)
@@ -71,9 +72,13 @@ export default function Login() {
       <Load visible={loading} data="sending code...."/>
       <StatusBar style='light' />
       <View className=' items-center mt-20 '>
-        <Text className='text-4xl text-accent'>COURSEPASS</Text>
+        <Image
+             style={{width:100,  height: 100, marginBottom: 20}}
+                source={require('../assets/images/newLogo.png')}
+              />
+              <Text className="text-accent font-bold text-xl">CoursePass</Text>
       </View>
-      <View className='items-center mt-20  '>
+      <View className='items-center  mt-10 '>
         <Text className='text-4xl text-accent font-bold'>LOGIN</Text>
       </View>
       <Modal

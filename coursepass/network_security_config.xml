@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="true">44.208.232.174</domain> <!-- replace with your actual EC2 public IP -->
+  </domain-config>
+</network-security-config>

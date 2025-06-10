@@ -23,6 +23,7 @@ import {initializeAuth} from "../redox/actions/loginActionCreator"
 import { useEffect, useState } from "react";
 import { ToastProvider } from 'react-native-toast-notifications'
 import Toast from 'react-native-toast-message';
+import {toastConfig} from "../components/toastConfig"
 
 
 
@@ -75,7 +76,7 @@ export default function RootLayout() {
     <Provider store={store}>
      
       <RootLayoutNav/>
-      <Toast/>
+     <Toast config={toastConfig} />
 
     
   </Provider>

@@ -43,7 +43,9 @@ console.log(college,department,university  );
         const fetchUniversity = async ()=>{
             try {
 
-                const response = await  axios.get("http://172.20.10.5:5000/api/v1/universities");
+                const response = await  axios.get("https://api.coursepass.me/api/v1/universities");
+                console.log(response);
+                
             
                 
                 if (response.status === 200) {
@@ -78,7 +80,7 @@ console.log(college,department,university  );
     const handleCollege = async (id)=>{
         try {
 
-            const response = await  axios.get(`http://172.20.10.5:5000/api/v1/universities/${id}/college`);
+            const response = await  axios.get(`https://api.coursepass.me/api/v1/universities/${id}/college`);
         
             
             if (response.status === 200) {
@@ -108,7 +110,7 @@ console.log(college,department,university  );
     const handleDepartment = async (id)=>{
         try {
 
-            const response = await  axios.get(`http://172.20.10.5:5000/api/v1/college/${id}/department`);
+            const response = await  axios.get(`https://api.coursepass.me/api/v1/college/${id}/department`);
         
             
             if (response.status === 200) {
@@ -136,7 +138,7 @@ console.log(college,department,university  );
   const handleRegister =async(userId)=>{
     try {
      
-      const response = await axios.post(`http://172.20.10.5:5000/api/v1/auth/university/${userId}`, {
+      const response = await axios.post(`https://api.coursepass.me/api/v1/auth/university/${userId}`, {
         university:university,
         College:college,
         department:department,
@@ -146,7 +148,7 @@ console.log(college,department,university  );
       if (response.status === 201) {
    
         PopUp({type: "success", title: "Successful", message:"Registration successfull"});
-        navigation.navigate('profilePic');
+        navigation.navigate('profilePic',{userId});
         
         
       } else {  
@@ -276,12 +278,12 @@ const handleSkip =()=>{
        <View className=" flex-row item-center justify-around mx-5 ">
       
        
-            <TouchableOpacity  onPress={handleSkip}
+            {/* <TouchableOpacity  onPress={handleSkip}
             className='bg-base  p-3 rounded-2xl mb-3 mt-3 w-40 justify-center border border-accent flex-row item-center'   >
                 <Text className='text-xl font-bold text-accent text-center '>
                        Skip
                 </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity  onPress={()=>handleRegister(userId)}
             className='bg-accent  p-3 rounded-2xl mb-3 mt-3 w-40 justify-center flex-row item-center'   >
                 <Text className='text-xl font-bold text-base text-center '>

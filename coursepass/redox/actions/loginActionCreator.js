@@ -78,14 +78,22 @@ export function logout() {
 
 const apiLogin = async (username, password) =>{
   try{
-    const response = await axios.post('http://172.20.10.5:5000/api/v1/auth/login', {username, password})
+    const response = await axios.post('https://api.coursepass.me/api/v1/auth/login', {username, password})
   
     return response.data}
   catch(error ){
-    console.log(error.status );
-    console.log(error.response.data );
-    const msg = error.response.data.error
-    PopUp({ type: "error", title: "Login Failed", message:`${msg}` });
+     const isAxiosError = axios.isAxiosError(error);
+  const errorMessage = isAxiosError
+    ? error.response?.data?.message || error.message
+    : 'An unexpected error occurred';
+
+  PopUp({
+    type: "error",
+    title: "Login Failed",
+    message: `${errorMessage}`,
+  });
+ 
+    
     throw new Error (error.response?.data?.message ||  'Logins failed'); }
   }
 

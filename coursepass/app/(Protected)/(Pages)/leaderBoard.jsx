@@ -186,7 +186,7 @@ export default function LeaderboardScreen() {
     .sort((a, b) => a.position - b.position);
 
   return (
-    <SafeAreaView className="h-full bg-black">
+    <SafeAreaView className="h-full bg-black mt-10">
 
       <StatusBar barStyle="light-content" />
       <View className="absolute top-10">

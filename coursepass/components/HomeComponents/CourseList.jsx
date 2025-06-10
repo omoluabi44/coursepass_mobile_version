@@ -59,10 +59,10 @@ export default function CourseList() {
     
                       <Text className="font-bold text-3xl text-black"
           style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
-        >Networt error</Text>
-        <Text className="text-center"
+        >Loading....</Text>
+        <Text className="text-center "
           style={theme === 'dark' ? {color: "#d4d4d4"} : {color: "gray"}}
-        >its not your fault </Text>
+        >holding on </Text>
       </View>
     </View>
   );
@@ -76,7 +76,9 @@ export default function CourseList() {
     return (
       <View className="h-full  ">
         <View className="mt-10 items-center" >
-          <Text>
+          <Text
+            style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
+          >
             Your dashboard is empty, add new course!!!
           </Text>
         </View >
@@ -85,7 +87,9 @@ export default function CourseList() {
             <FontAwesome name="plus" size={40} color="blue" />
           </TouchableOpacity>
 
-          <Text > Add new course</Text>
+          <Text 
+            style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
+          > Add new course</Text>
         </View>
 
       </View>

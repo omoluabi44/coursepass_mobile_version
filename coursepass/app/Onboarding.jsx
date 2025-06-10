@@ -8,36 +8,39 @@ const OnboardingData = [
   {
     title: "Unlock Your Academic Success",
     description: "Dive into a rich repository of course notes",
-    image: require('../assets/images/learning.webp'),
+    image: require('../assets/images/onboarding image/note.png'),
   },
   {
     title: "Learn from the Past",
     description: "Gain access to real past exam questions and test",
-    image: require('../assets/images/quize.webp'),
+    image: require('../assets/images/onboarding image/quize.png'),
   },
   {
-    title: "Learn Smarter with AI",
-    description: "Get personalized study assistance with AI-powered learning.",
-    image: require('../assets/images/quize.webp'),
+    title: "Learn Faster with Flashcard Summaries",
+    description: "Convert long readings into clear, focused flashcards in seconds.",
+    image: require('../assets/images/onboarding image/flashcard.png'),
   },
   {
     title: "Your Learning, Your Rewards!",
     description: "Engage with course materials, complete challenges.",
-    image: require('../assets/images/gami.webp')
+    image: require('../assets/images/onboarding image/leaderboad.png')
   }
 ];
 
 const Slide = ({item}) => {
   return (
-    <View className='items-center' style={{width}}>
+    <View className='items-center ' style={{width}}>
       <Image
-        style={{height:'75%', width: width, resizeMode: 'contain'}}
+        style={{height:'75%', width: width, backgroundColor:"white", resizeMode: 'contain'}}
         source={item.image}
       />
-      <Text className='text-secondary text-lg font-bold mt-4'>
+      <View className="">
+    <Text className='text-accent text-center text-lg font-bold mt-4'>
         {item.title}
       </Text>
-      <Text className='text-center text-gray-600 px-8 mt-2' style={{maxWidth:'80%', fontSize:15}}>
+      </View>
+      
+      <Text className='text-center text-black px-8 mt-2' style={{maxWidth:'80%', fontSize:15}}>
         {item.description}
       </Text>
     </View>
@@ -86,7 +89,7 @@ const Onboarding = () => {
             onPress={skipToEnd}
             className="py-3 px-6 border border-base rounded-full"
           >
-            <Text className="text-base font-semibold">Skip</Text>
+            <Text className="text-accent font-semibold">Skip</Text>
           </TouchableOpacity>
         )}
 
@@ -109,7 +112,7 @@ const Onboarding = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-accent">
+    <SafeAreaView className="flex-1 bg-base">
       <FlatList
         ref={flatListRef}
         pagingEnabled

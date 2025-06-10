@@ -1,38 +1,3 @@
-// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
-// export const api = createApi({
-//   baseQuery: fetchBaseQuery({
-//     // Fill in your own server starting URL here
-//     baseUrl: 'http://172.20.10.5:5000/api/v1/',
-//     prepareHeaders: (headers, { getState }) => {
-//       const token = getState().login.token.access
-//       console.log("this is from prepareHeadres",token);
-
-
-//       if (token) {
-//         headers.set('authorization', `Bearer ${token}`)
-//       }
-
-//       return headers
-//     }
-//   }),
-
-
-//   endpoints: (build) => ({
-//     getUser: build.query({
-//         query: () => "/users"
-//     }),
-//     getUserId: build.query({
-//       query: (id) => `user/${id}`
-//   }),
-//   getUserRefresh: build.query({
-//     query: () => "refresh/"
-// })
-//   }),
-// })
-
-// export const { useGetUserQuery, useGetUserIdQuery, useGetUserRefreshQuery} = api
-
 
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,7 +8,7 @@ import {ScrollViewBase} from 'react-native';
 
 // Base query with token injection
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://172.20.10.5:5000/api/v1/',
+  baseUrl: 'https://api.coursepass.me/api/v1/',
   prepareHeaders: (headers, {getState}) => {
     const accessToken = getState().login.token.access;
 

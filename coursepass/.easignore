@@ -1,5 +1,25 @@
+# node_modules and logs
 node_modules
-.expo
-android
-ios
 *.log
+
+# Git and system files
+.git
+.gitignore
+.DS_Store
+
+# Build and test artifacts
+build
+dist
+coverage
+.expo
+.expo-shared
+*.stackdump
+*.pem
+a.out
+re
+test.jsx
+env
+Backend
+admin
+OUTPUT
+ai

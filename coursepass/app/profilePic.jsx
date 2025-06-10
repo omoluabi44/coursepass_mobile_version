@@ -6,15 +6,19 @@ import {useSelector} from 'react-redux';
 import Load from '../components/loader';
 import {useNavigation} from '@react-navigation/native';
 import PopUp from '../components/toast';
+import { useRoute } from '@react-navigation/native';
 
 
 const ImageUploadComponent = () => {
   const [image, setImage] = useState(null);
-  const {user} = useSelector((state) => state.login);
+  // const {user} = useSelector((state) => state.login);
   const [loading, setLoading] = useState(false);
-   // const [loading, setLoading] = useState(true);
+  const route = useRoute();
+  const { userId} = route.params;
+  // const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
- 
+  console.log("this",userId);
+
   // Pick image from gallery
   const pickImage = async () => {
     try {
@@ -25,13 +29,13 @@ const ImageUploadComponent = () => {
       });
 
       if (result.canceled) {
-       
+
       } else {
         setImage(result.assets[0]);
-       
+
       }
     } catch (err) {
-     
+
       Alert.alert('Error', 'Failed to pick image.');
     }
   };
@@ -55,34 +59,37 @@ const ImageUploadComponent = () => {
         type: image.mimeType || 'image/jpeg', // Fallback to JPEG
         name: fileName,
       });
-      formData.append('user_id', user.id);
+      formData.append('user_id', userId);
+      console.log("i executed");
 
 
-      const response = await axios.post('http://172.20.10.5:5000/api/v1/user/upload_profile_image', formData, {
+
+      const response = await axios.post('https://api.coursepass.me/api/v1/user/upload_profile_image', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-  
-    
-      PopUp({type: "success", title: "Success", message:"Image uploaded successfully!"});
+      console.log(response);
+
+
+      PopUp({type: "success", title: "Success", message: "Image uploaded successfully!"});
       // setLoading(false)
       navigation.navigate('login');
     } catch (error) {
       // setLoading(false)
-    
+
     }
-      finally {
-    setLoading(false);
-      
-       
+    finally {
+      setLoading(false);
+
+
       // Alert.alert('Error', 'Failed to upload image.');
-     
+
     }
-  
+
   };
-// {loading && <Load visible={loading} data="Uploading image" />}
+  // {loading && <Load visible={loading} data="Uploading image" />}
   return (
 
     <View className="h-full  items-center mt-10" >
@@ -110,7 +117,7 @@ const ImageUploadComponent = () => {
         </View>
       }
       <View className="flex-row justify-around items-center bg-accen w-full">
-       <View>
+        <View>
           <TouchableOpacity onPress={() => navigation.navigate("login")}
             className='bg-base  p-3 rounded-2xl mb-3  w-40 justify-center border-accent border flex-row '>
             <Text className='text-xl font-bold text-accent text-center '>Skip</Text>
@@ -121,7 +128,7 @@ const ImageUploadComponent = () => {
           <View>
             <TouchableOpacity onPress={async () => {
               setLoading(true)
-             await  uploadImage()
+              await uploadImage()
             }}
               className='bg-accent  p-3 rounded-2xl mb-3 mt-3 justify-center flex-row'>
               <Text className='text-xl font-bold text-base text-center '>Set  Profile</Text>
@@ -130,14 +137,14 @@ const ImageUploadComponent = () => {
           :
           <View>
             <TouchableOpacity onPress={pickImage}
-           
+
               className='bg-accent  p-3 rounded-2xl mb-3 w-60 '>
 
               <Text className='text-xl font-bold text-base text-center '> Select Image</Text>
             </TouchableOpacity>
           </View>
         }
-       
+
       </View>
 
       {/* {image && (

@@ -69,7 +69,7 @@ const OTPInput = () => {
 
     try {
 
-      const response = await axios.post("http://172.20.10.5:5000/api/v1/auth/verify", {
+      const response = await axios.post("https://api.coursepass.me/api/v1/auth/verify", {
         code: otpString,
         email: email,
         username: username

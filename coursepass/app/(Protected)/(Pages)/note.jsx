@@ -20,11 +20,11 @@ export default function CourseNote() {
   const [question, setQuestion] = useState("")
   const {user} = useSelector((state) => state.login);
   const {data: note, isFetching: isFetchingNote, isSuccess: isSuccessNote, error: ErrorNote, isError: isErrorNote} = useGetNoteSessionQuery({outline, selectedValue});
-  const [createFlashCard, {isLoading: isEnrolling, isSuccess: enrollSuccess, isError: enrollError, error: enrollErrorData, refetch }] = useCreateFlashCardMutation();
+  const [createFlashCard, {isLoading: isEnrolling, isSuccess: enrollSuccess, isError: enrollError, error: enrollErrorData, refetch}] = useCreateFlashCardMutation();
   const [streak, {isLoading: isStreaking, isSuccess: StreakSuccess, isError: streakError, error: streakErrorData}] = usePointMutation();
   const theme = useColorScheme();
   console.log(courseId);
-  
+
   const actions = [
     {
       text: "Flashcard",
@@ -43,7 +43,7 @@ export default function CourseNote() {
       console.log('point earn');
 
     } catch (err) {
-     
+
 
     }
 
@@ -63,7 +63,7 @@ export default function CourseNote() {
 
     if (enrollSuccess) {
       PopUp({type: "success", title: "Successful", message: "Flashcard creation was  successful!"});
-        console.log(courseId);
+      console.log(courseId);
 
     }
     if (enrollError) {
@@ -118,7 +118,7 @@ export default function CourseNote() {
 
     } catch (err) {
       console.log(err);
-      
+
 
     }
 
@@ -127,6 +127,8 @@ export default function CourseNote() {
 
   const handleNavigation = () => {
     // navigation.navigate("profile")
+    console.log("i press");
+    
     router.push("/courseDetails")
   }
 
@@ -136,7 +138,12 @@ export default function CourseNote() {
     >
       <View className="h-full">
         <View className='flex-row  items-center h-10'>
-          <View className="ml-5">
+          {/* <View className="ml-5">
+            <TouchableOpacity onPress={handleNavigation}>
+              <AntDesign name="left" size={24} color={theme === "dark" ? "white" : "dark"} />
+            </TouchableOpacity>
+          </View> */}
+          <View className="absolute top-2 ml-2">
             <TouchableOpacity onPress={handleNavigation}>
               <AntDesign name="left" size={24} color={theme === "dark" ? "white" : "dark"} />
             </TouchableOpacity>
@@ -146,7 +153,7 @@ export default function CourseNote() {
               style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
             > {topic}  </Text>
           </View>
-
+       
 
           <Modal
             visible={modalVisible}
@@ -157,15 +164,15 @@ export default function CourseNote() {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View className="flex-1 justify-center items-center  px-4">
                 <View className="bg-white w-full max-w-md rounded-2xl p-6 shadow-lg"
-                style={ theme === 'dark' ? { backgroundColor: "black" } : "" }
+                  style={theme === 'dark' ? {backgroundColor: "black"} : ""}
                 >
                   <Text className="text-lg font-bold mb-4 text-center"
-                   style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                    style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
                   >Create Flashcard</Text>
 
                   <View className="mb-4">
                     <Text className="text-gray-700 mb-1"
-                     style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                      style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
                     >Question</Text>
                     <TextInput
                       multiline
@@ -179,7 +186,7 @@ export default function CourseNote() {
 
                   <View className="mb-6">
                     <Text className="text-gray-700 mb-1"
-                     style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                      style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
                     >Answer</Text>
                     <TextInput
                       multiline
@@ -194,11 +201,11 @@ export default function CourseNote() {
                   <View className="flex-row justify-between">
                     <Pressable
                       className="bg-gray-300 px-4 py-2 rounded-lg"
-                      style={ theme === 'dark' ? { backgroundColor: "#252231" } : "" }
+                      style={theme === 'dark' ? {backgroundColor: "#252231"} : ""}
                       onPress={() => setModalVisible(false)}
                     >
                       <Text className="text-gray-700 font-medium"
-                       style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                        style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
                       >Cancel</Text>
                     </Pressable>
 
@@ -210,7 +217,7 @@ export default function CourseNote() {
                       }}
                     >
                       <Text className="text-white font-medium"
-                       style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+                        style={theme === 'dark' ? {color: "#d4d4d4"} : ""}
                       >Save</Text>
                     </Pressable>
                   </View>
@@ -223,15 +230,15 @@ export default function CourseNote() {
         </View>
 
         <ScrollView>
-          <View className="mx-5">
+          <View className="mx-5 mt-5">
             <MarkdownMathView
-            //  style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
-             markdown={`This is some colored math: $$\\textcolor{green}{E = mc^2}$$`}
-              style={{ color: 'black', fontSize: 18 }}
+              //  style={ theme === 'dark' ? { color: "#d4d4d4" } : "" }
+              markdown={`This is some colored math: $$\\textcolor{green}{E = mc^2}$$`}
+              style={{color: 'black', fontSize: 18}}
             >
-             
+
               {note.content}
-    
+
             </MarkdownMathView>
 
 

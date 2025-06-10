@@ -37,7 +37,7 @@ export default function Home() {
 
 
   return (
-    <SafeAreaView className=" h-full"
+    <SafeAreaView className=" h-full  "
       style={theme === 'dark' ? {backgroundColor: "#252231"} : ""}
     >
 

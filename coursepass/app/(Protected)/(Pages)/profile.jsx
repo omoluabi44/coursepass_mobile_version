@@ -25,6 +25,7 @@ export default function Profile() {
 
 
 
+
   const logOut = () => {
     dispatch(logout());
   };

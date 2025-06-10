@@ -4,14 +4,15 @@
     "slug": "coursepass",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/icon.png",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -28,10 +29,16 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon-new.png",
+          "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#000000"
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8975504776901174~3152829210"
         }
       ]
     ],
@@ -43,9 +50,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "a8ee6b51-2e96-4e20-bc0c-841a10a0a06d"
+        "projectId": "12b84df3-4f85-4a3e-aa8d-947296d6eafb"
       }
     },
-    "owner": "omoluabi12"
+    "owner": "omoluabi6"
   }
 }

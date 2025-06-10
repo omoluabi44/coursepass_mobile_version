@@ -1,5 +1,5 @@
 import {View, Text, SafeAreaView, TouchableOpacity, StatusBar, RefreshControl} from 'react-native'
-import React,{useCallback, useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import GoBackBtn from '../../../../components/goBackButton';
 import {MaterialCommunityIcons, AntDesign} from '@expo/vector-icons/';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -13,19 +13,20 @@ import LoadingComponent from '../../../../components/HomeComponents/loading';
 
 
 
+
 export default function FlashCardList() {
   const navigation = useNavigation()
   const {user} = useSelector((state) => state.login);
   const {data, isFetching, isSuccess, error, isError, refetch} = useGetFlashcardQuery(user.id)
   const theme = useColorScheme();
-    const [refreshing, setRefreshing] = useState(false)
-      const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        refetch()
-          .finally(() => {
-            setRefreshing(false);
-          });
-      }, []);
+  const [refreshing, setRefreshing] = useState(false)
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch()
+      .finally(() => {
+        setRefreshing(false);
+      });
+  }, []);
 
 
   if (isFetching) {
@@ -102,15 +103,15 @@ export default function FlashCardList() {
           > FLASHCARDS</Text>
         </View>
         <ScrollView
-           refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={['#007BFF']} 
-                  tintColor="#007BFF" 
-                  scrollEnabled={false}
-                />
-              }
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#007BFF']}
+              tintColor="#007BFF"
+              scrollEnabled={false}
+            />
+          }
         >
           {data?.map((coursename, id) => {
             return (
@@ -141,6 +142,8 @@ export default function FlashCardList() {
 
                           </View>
                         </TouchableOpacity>
+                     
+
 
                       </View>
                     )

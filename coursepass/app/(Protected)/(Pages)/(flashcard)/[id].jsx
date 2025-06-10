@@ -1,3 +1,4 @@
+
 import {View, Text, SafeAreaView, ScrollView, Dimensions, TouchableOpacity, Alert} from 'react-native';
 import {useLocalSearchParams} from 'expo-router';
 import React, {useState} from 'react';
@@ -159,3 +160,4 @@ export default function FlashCardDetails() {
     </SafeAreaView>
   );
 }
+
